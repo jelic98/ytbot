@@ -32,7 +32,7 @@ public class Like {
 
     @Test
     public static void testLike(String url, String comment, String username, String password) throws Exception {
-        int nextPage, isPresent;
+        int isPresent;
         JavascriptExecutor jse = (JavascriptExecutor) driver;
 
         driver.manage().window().maximize();
@@ -51,18 +51,27 @@ public class Like {
             driver.findElement(By.id("signIn")).click();
         }
 
-        nextPage = 0;
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        jse.executeScript("window.scrollTo(0,document.body.scrollHeight)");
+        int pos = driver.manage().window().getSize().getHeight() / 2;
+        WebElement more;
 
-        do {
+        while(!textExists(comment)) {
+            jse.executeScript("window.scrollTo(0 , " + pos + ")");
+            pos += 250;
+
+            System.out.println(textExists(comment));
+
+            if(moreButtonSize() > 0) {
+                more = driver.findElement(By.xpath("//*[@id=\"comment-section-renderer\"]/button"));
+                more.click();
+            }
+        }
+
             if(textExists(comment)) {
-                WebElement commentElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), '" + comment + "')]")));
+                WebElement commentElement = driver.findElement(By.xpath("//*[contains(text(), '" + comment + "')]"));
                 jse.executeScript("window.scrollTo(" + getX(commentElement) + ", " + getY(commentElement) + ")");
                 WebElement commentFirstParent = commentElement.findElement(By.xpath(".."));
                 WebElement commentSecondParent = commentFirstParent.findElement(By.xpath(".."));
                 WebElement likeParent = commentSecondParent.findElement(By.className("comment-renderer-footer"));
-                jse.executeScript("window.scrollTo(" + getX(likeParent) + ", " + getY(likeParent) + ")");
                 List<WebElement> childs = likeParent.findElements(By.xpath(".//*"));
 
                 for(WebElement element : childs) {
@@ -73,31 +82,12 @@ public class Like {
                         if(element.getAttribute("data-action-type").equals("like")
                                 && element.getCssValue("color").equals("rgba(51, 51, 51, 1)")) {
                             element.click();
+                            System.out.print("success");
                             break;
                         }
                     }
                 }
-
-                break;
-            }else {
-                while(moreButtonSize() == 0) {
-                    jse.executeScript("window.scrollTo(0, window.innerHeight / 2)");
-
-                    if(driver.findElement(By.id("google-help")).getSize().getWidth() > 0) {
-                        break;
-                    }
-                }
-
-                if(moreButtonSize() > 0) {
-                    WebElement more = driver.findElement(By.className("load-more-text"));
-                    jse.executeScript("window.scrollTo(" + getX(more) + ", " + getY(more) + ")");
-                    nextPage = more.getSize().width;
-                    more.click();
-                }else {
-                    Error.showError("Komentar ne postoji");
-                }
             }
-        }while(nextPage > 0);
     }
 
     public static boolean textExists(String text){
@@ -106,7 +96,7 @@ public class Like {
     }
 
     public static int moreButtonSize(){
-        int s = driver.findElements(By.className("load-more-text")).size();
+        int s = driver.findElements(By.xpath("//*[@id=\"comment-section-renderer\"]/button")).size();
         return s;
     }
 
