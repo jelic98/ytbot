@@ -203,7 +203,7 @@ public class Window {
         //get screen width and height
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) screenSize.getWidth();
-        int height = (int) screenSize.getWidth() / 10;
+        int height = (int) screenSize.getWidth() / 2;
 
         //set upapplication window
         JFrame frame = new JFrame();

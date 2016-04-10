@@ -41,14 +41,22 @@ public class Comment {
         }
 
         JavascriptExecutor jse = (JavascriptExecutor)driver;
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        jse.executeScript("window.scrollBy(0, " + driver.manage().window().getSize().getHeight() / 2 + ")", "");
-        WebElement commentBox = driver.findElement(By.className("comment-simplebox-renderer-collapsed-content"));
-        commentBox.click();
-        driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
-        driver.findElement(By.className("comment-simplebox-submit")).click();
+        jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
+        int pos = driver.manage().window().getSize().height;
 
-        Success.showMessage("Komentarisanje je zavrseno");
+        while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+            pos -= 50;
+            jse.executeScript("window.scrollTo(0 , " + pos + ")");
+
+            if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                WebElement commentBox = driver.findElement(By.className("comment-simplebox-renderer-collapsed-content"));
+                commentBox.click();
+                driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
+                driver.findElement(By.className("comment-simplebox-submit")).click();
+                Success.showMessage("Komentarisanje je zavrseno");
+                break;
+            }
+        }
     }
 
     @After

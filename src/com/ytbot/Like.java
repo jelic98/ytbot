@@ -1,18 +1,10 @@
 package com.ytbot;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.*;
 import static org.junit.Assert.*;
-
-import org.openqa.jetty.html.Element;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Like {
     public static WebDriver driver;
@@ -34,6 +26,7 @@ public class Like {
     public static void testLike(String url, String comment, String username, String password) throws Exception {
         int isPresent;
         JavascriptExecutor jse = (JavascriptExecutor) driver;
+        WebElement more;
 
         driver.manage().window().maximize();
         driver.get(url);
@@ -51,14 +44,21 @@ public class Like {
             driver.findElement(By.id("signIn")).click();
         }
 
-        int pos = driver.manage().window().getSize().getHeight() / 2;
-        WebElement more;
+        jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
+        int pos = driver.manage().window().getSize().height;
+
+        while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+            pos -= 50;
+            jse.executeScript("window.scrollTo(0 , " + pos + ")");
+
+            if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                break;
+            }
+        }
 
         while(!textExists(comment)) {
+            pos += 50;
             jse.executeScript("window.scrollTo(0 , " + pos + ")");
-            pos += 250;
-
-            System.out.println(textExists(comment));
 
             if(moreButtonSize() > 0) {
                 more = driver.findElement(By.xpath("//*[@id=\"comment-section-renderer\"]/button"));
@@ -82,7 +82,6 @@ public class Like {
                         if(element.getAttribute("data-action-type").equals("like")
                                 && element.getCssValue("color").equals("rgba(51, 51, 51, 1)")) {
                             element.click();
-                            System.out.print("success");
                             break;
                         }
                     }
