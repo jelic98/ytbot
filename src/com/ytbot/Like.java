@@ -1,17 +1,25 @@
 package com.ytbot;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import static org.junit.Assert.*;
+
+import org.omg.CORBA.SystemException;
 import org.openqa.selenium.*;
 
 public class Like {
     public static WebDriver driver;
     public static StringBuffer verificationErrors = new StringBuffer();
+    public static String globalIP;
+    public static int globalPort;
 
     public static void like(String ip, int port, String url, String comment, String username, String password) throws Exception {
         setUp(ip, port);
+        globalIP = ip;
+        globalPort = port;
         testLike(url, comment, username, password);
         tearDown();
     }
@@ -31,6 +39,8 @@ public class Like {
         driver.manage().window().maximize();
         driver.get(url);
 
+        Thread.sleep(1000);
+
         isPresent = driver.findElements(By.className("signin-container ")).size();
 
         if(isPresent > 0) {
@@ -44,27 +54,45 @@ public class Like {
             driver.findElement(By.id("signIn")).click();
         }
 
-        jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
-        int pos = driver.manage().window().getSize().height;
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int i = 20;
 
-        while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
-            pos -= 50;
-            jse.executeScript("window.scrollTo(0 , " + pos + ")");
+            public void run() {
+                System.out.println(i);
 
-            if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
-                break;
+                if(i == 0) {
+                    Window.session = 1;
+                    timer.cancel();
+                    return;
+                }
+
+                i--;
             }
-        }
+        }, 0, 1000);
 
-        while(!textExists(comment)) {
-            pos += 50;
-            jse.executeScript("window.scrollTo(0 , " + pos + ")");
+        if(driver.toString() != null) {
+            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
+            int pos = driver.manage().window().getSize().height;
 
-            if(moreButtonSize() > 0) {
-                more = driver.findElement(By.xpath("//*[@id=\"comment-section-renderer\"]/button"));
-                more.click();
+            while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+                pos -= 50;
+                jse.executeScript("window.scrollTo(0 , " + pos + ")");
+
+                if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                    break;
+                }
             }
-        }
+
+            while(!textExists(comment)) {
+                pos += 50;
+                jse.executeScript("window.scrollTo(0 , " + pos + ")");
+
+                if(moreButtonSize() > 0) {
+                    more = driver.findElement(By.xpath("//*[@id=\"comment-section-renderer\"]/button"));
+                    more.click();
+                }
+            }
 
             if(textExists(comment)) {
                 WebElement commentElement = driver.findElement(By.xpath("//*[contains(text(), '" + comment + "')]"));
@@ -82,11 +110,13 @@ public class Like {
                         if(element.getAttribute("data-action-type").equals("like")
                                 && element.getCssValue("color").equals("rgba(51, 51, 51, 1)")) {
                             element.click();
+                            timer.cancel();
                             break;
                         }
                     }
                 }
             }
+        }
     }
 
     public static boolean textExists(String text){

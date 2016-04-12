@@ -24,6 +24,8 @@ public class Window {
     int counter = 0;
     int counter2 = 0;
 
+    public static int session = 0;
+
     public Window() {
         btnKomentarisi.addActionListener(new ActionListener() {
             @Override
@@ -54,46 +56,49 @@ public class Window {
                 if(counter > 0 && counter2 > 0) {
                     int brojac = 0;
                     int indexP = 0;
-                    int indexA = 0;
                     int a = accounts.size();
                     int p = proxies.size();
 
                     for(String key : accounts.keySet()) {
+                        boolean firstRun = true;
+
                         //initialize parameters
                         String username = key;
                         String password = accounts.get(key);
-                        String korisnickoIme = tfKorisnickoIme.getText();
                         String url = tfURL.getText();
                         String komentar = tfKomentar.getText();
                         int port = Integer.parseInt(tfPort.getText());
 
                         brojac++;
-                        indexA++;
 
-                        if(brojac >= a / p) {
+                        if (brojac >= a / p) {
                             counter = 0;
                             indexP++;
                         }
 
-                        if(indexP == p) {
+                        if (indexP == p) {
                             indexP = 0;
                         }
 
-                        //handle inputs from necessary fields
-                        if(url.isEmpty() || komentar.isEmpty()) {
-                            Error.showError("Popuni neophodna polja");
-                        }else {
-                            //execute like action
-                            try {
-                                Like.like(proxies.get(indexP), port, url, komentar, username, password);
-                            } catch (Exception e1) {
-                                e1.printStackTrace();
+                        while(session == 1 || firstRun) {
+                            firstRun = false;
+
+                            //handle inputs from necessary fields
+                            if (url.isEmpty() || komentar.isEmpty()) {
+                                Error.showError("Popuni neophodna polja");
+                            } else {
+                                //execute like action
+                                try {
+                                    Like.like(proxies.get(indexP), port, url, komentar, username, password);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
                             }
                         }
                     }
 
                     Success.showMessage("Lajkovanje je zavrseno");
-                }else {
+                    }else {
                     Error.showError("Ucitaj neophodne fajlove");
                 }
             }
@@ -203,7 +208,7 @@ public class Window {
         //get screen width and height
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) screenSize.getWidth();
-        int height = (int) screenSize.getWidth() / 2;
+        int height = (int) screenSize.getWidth();
 
         //set upapplication window
         JFrame frame = new JFrame();
