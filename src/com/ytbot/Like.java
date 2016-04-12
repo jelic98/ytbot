@@ -110,6 +110,7 @@ public class Like {
                         if(element.getAttribute("data-action-type").equals("like")
                                 && element.getCssValue("color").equals("rgba(51, 51, 51, 1)")) {
                             element.click();
+                            Window.liked = 1;
                             timer.cancel();
                             break;
                         }

@@ -1,7 +1,5 @@
 package com.ytbot;
 
-        import javafx.stage.FileChooser;
-
         import javax.swing.*;
         import javax.swing.filechooser.FileFilter;
         import java.awt.*;
@@ -25,6 +23,7 @@ public class Window {
     int counter2 = 0;
 
     public static int session = 0;
+    public static int liked;
 
     public Window() {
         btnKomentarisi.addActionListener(new ActionListener() {
@@ -61,6 +60,7 @@ public class Window {
 
                     for(String key : accounts.keySet()) {
                         boolean firstRun = true;
+                        liked = 0;
 
                         //initialize parameters
                         String username = key;
@@ -80,7 +80,7 @@ public class Window {
                             indexP = 0;
                         }
 
-                        while(session == 1 || firstRun) {
+                        while((session == 1 || firstRun) && liked == 0) {
                             firstRun = false;
 
                             //handle inputs from necessary fields
