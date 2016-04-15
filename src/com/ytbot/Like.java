@@ -59,8 +59,6 @@ public class Like {
             int i = 20;
 
             public void run() {
-                System.out.println(i);
-
                 if(i == 0) {
                     Window.session = 1;
                     timer.cancel();

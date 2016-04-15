@@ -7,7 +7,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5db22fa-4881-4743-b51c-571bdb4a1898" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Comment.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Comment.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$1.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$2.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$3.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$4.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$5.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Comment.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Comment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Like.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Like.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Window.form" afterPath="$PROJECT_DIR$/src/com/ytbot/Window.form" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Window.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Window.java" />
     </list>
     <ignored path="ytbot.iws" />
@@ -33,10 +43,18 @@
       <file leaf-file-name="Window.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ytbot/Window.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.55342466">
-              <caret line="75" column="37" selection-start-line="75" selection-start-column="37" selection-end-line="75" selection-end-column="37" />
+            <state vertical-scroll-proportion="0.2931507">
+              <caret line="98" column="25" selection-start-line="98" selection-start-column="25" selection-end-line="98" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#5541#5542#0" expanded="true" />
+                <element signature="e#5594#5595#0" expanded="true" />
+                <element signature="e#5752#5753#0" expanded="true" />
+                <element signature="e#5801#5802#0" expanded="true" />
+                <element signature="e#7448#7449#0" expanded="true" />
+                <element signature="e#7515#7516#0" expanded="true" />
+                <element signature="e#7583#7584#0" expanded="true" />
+                <element signature="e#7629#7630#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -56,7 +74,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/ytbot/Comment.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="47" column="22" selection-start-line="47" selection-start-column="22" selection-end-line="47" selection-end-column="22" />
+              <caret line="63" column="59" selection-start-line="63" selection-start-column="58" selection-end-line="63" selection-end-column="59" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -78,7 +96,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/ytbot/Like.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="65" column="35" selection-start-line="65" selection-start-column="35" selection-end-line="65" selection-end-column="35" />
+              <caret line="61" column="28" selection-start-line="61" selection-start-column="28" selection-end-line="61" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -125,8 +143,8 @@
         <option value="$PROJECT_DIR$/src/com/ytbot/Error.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Proxy.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Success.java" />
-        <option value="$PROJECT_DIR$/src/com/ytbot/Comment.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Timer.java" />
+        <option value="$PROJECT_DIR$/src/com/ytbot/Comment.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Window.form" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Like.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Window.java" />
@@ -910,6 +928,14 @@
           <caret line="85" column="39" selection-start-line="85" selection-start-column="39" selection-end-line="85" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5594#5595#0" expanded="true" />
+            <element signature="e#5752#5753#0" expanded="true" />
+            <element signature="e#5801#5802#0" expanded="true" />
+            <element signature="e#7448#7449#0" expanded="true" />
+            <element signature="e#7515#7516#0" expanded="true" />
+            <element signature="e#7583#7584#0" expanded="true" />
+            <element signature="e#7629#7630#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -971,6 +997,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5594#5595#0" expanded="true" />
+            <element signature="e#5752#5753#0" expanded="true" />
+            <element signature="e#5801#5802#0" expanded="true" />
+            <element signature="e#7448#7449#0" expanded="true" />
+            <element signature="e#7515#7516#0" expanded="true" />
+            <element signature="e#7583#7584#0" expanded="true" />
+            <element signature="e#7629#7630#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1032,6 +1066,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5594#5595#0" expanded="true" />
+            <element signature="e#5752#5753#0" expanded="true" />
+            <element signature="e#5801#5802#0" expanded="true" />
+            <element signature="e#7448#7449#0" expanded="true" />
+            <element signature="e#7515#7516#0" expanded="true" />
+            <element signature="e#7583#7584#0" expanded="true" />
+            <element signature="e#7629#7630#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1093,6 +1135,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5594#5595#0" expanded="true" />
+            <element signature="e#5752#5753#0" expanded="true" />
+            <element signature="e#5801#5802#0" expanded="true" />
+            <element signature="e#7448#7449#0" expanded="true" />
+            <element signature="e#7515#7516#0" expanded="true" />
+            <element signature="e#7583#7584#0" expanded="true" />
+            <element signature="e#7629#7630#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1139,6 +1189,14 @@
           <caret line="41" column="77" selection-start-line="41" selection-start-column="77" selection-end-line="41" selection-end-column="77" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5594#5595#0" expanded="true" />
+            <element signature="e#5752#5753#0" expanded="true" />
+            <element signature="e#5801#5802#0" expanded="true" />
+            <element signature="e#7448#7449#0" expanded="true" />
+            <element signature="e#7515#7516#0" expanded="true" />
+            <element signature="e#7583#7584#0" expanded="true" />
+            <element signature="e#7629#7630#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1159,6 +1217,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5594#5595#0" expanded="true" />
+            <element signature="e#5752#5753#0" expanded="true" />
+            <element signature="e#5801#5802#0" expanded="true" />
+            <element signature="e#7448#7449#0" expanded="true" />
+            <element signature="e#7515#7516#0" expanded="true" />
+            <element signature="e#7583#7584#0" expanded="true" />
+            <element signature="e#7629#7630#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1179,6 +1245,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5594#5595#0" expanded="true" />
+            <element signature="e#5752#5753#0" expanded="true" />
+            <element signature="e#5801#5802#0" expanded="true" />
+            <element signature="e#7448#7449#0" expanded="true" />
+            <element signature="e#7515#7516#0" expanded="true" />
+            <element signature="e#7583#7584#0" expanded="true" />
+            <element signature="e#7629#7630#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1222,14 +1296,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Proxy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="42" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/lib/selenium-java-2.53.0.jar!/org/openqa/selenium/By.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.28402367">
@@ -1237,20 +1303,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Comment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="47" column="22" selection-start-line="47" selection-start-column="22" selection-end-line="47" selection-end-column="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ytbot/Error.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Success.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Proxy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="42" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
           <folding />
         </state>
       </provider>
@@ -1265,18 +1337,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Success.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ytbot/Like.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="65" column="35" selection-start-line="65" selection-start-column="35" selection-end-line="65" selection-end-column="35" />
+          <caret line="61" column="28" selection-start-line="61" selection-start-column="28" selection-end-line="61" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Comment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="63" column="59" selection-start-line="63" selection-start-column="58" selection-end-line="63" selection-end-column="59" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1285,10 +1359,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ytbot/Window.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55342466">
-          <caret line="75" column="37" selection-start-line="75" selection-start-column="37" selection-end-line="75" selection-end-column="37" />
+        <state vertical-scroll-proportion="0.2931507">
+          <caret line="98" column="25" selection-start-line="98" selection-start-column="25" selection-end-line="98" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5594#5595#0" expanded="true" />
+            <element signature="e#5752#5753#0" expanded="true" />
+            <element signature="e#5801#5802#0" expanded="true" />
+            <element signature="e#7448#7449#0" expanded="true" />
+            <element signature="e#7515#7516#0" expanded="true" />
+            <element signature="e#7583#7584#0" expanded="true" />
+            <element signature="e#7629#7630#0" expanded="true" />
           </folding>
         </state>
       </provider>

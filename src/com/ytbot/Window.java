@@ -13,14 +13,16 @@ package com.ytbot;
 
 public class Window {
     private JPanel panel;
-    private JLabel lblKorisnickoIme, lblLozinka, lblURL, lblKomentar, lblNalozi, lblAdrese, lblPort;
+    private JLabel lblKorisnickoIme, lblLozinka, lblLinkovi, lblNalozi, lblAdrese, lblPort;
     private JTextField tfURL, tfKorisnickoIme, tfLozinka, tfKomentar, tfPort;
-    private JButton btnKomentarisi, btnUcitajNaloge, btnLajkuj, btnUcitajAdrese;
+    private JButton btnKomentarisi, btnUcitajNaloge, btnUcitajAdrese, btnUcitajLinkove;
 
     Map<String, String> accounts = new HashMap<String, String>();
     List<String> proxies = new ArrayList<String>();
+    Map<String, String> urls = new HashMap<String, String>();
     int counter = 0;
     int counter2 = 0;
+    int counter3 = 0;
 
     public static int session = 0;
     public static int liked;
@@ -29,130 +31,145 @@ public class Window {
         btnKomentarisi.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //initialize parameters
-                String korisnickoIme = tfKorisnickoIme.getText();
-                String lozinka = tfLozinka.getText();
-                String url = tfURL.getText();
-                String komentar = tfKomentar.getText();
+                for(String key : urls.keySet()) {
+                    //initialize parameters
+                    String korisnickoIme = tfKorisnickoIme.getText();
+                    String lozinka = tfLozinka.getText();
+                    String url = key;
+                    String komentar = urls.get(key);
 
-                //handle inputs from necessary fields
-                if(korisnickoIme.isEmpty() || lozinka.isEmpty() || url.isEmpty() || komentar.isEmpty()) {
-                    Error.showError("Popuni sva polja");
-                }else {
-                    //execute comment action
-                    try {
-                        Comment.comment(url, komentar, korisnickoIme, lozinka);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        btnLajkuj.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(counter > 0 && counter2 > 0) {
-                    int brojac = 0;
-                    int indexP = 0;
-                    int a = accounts.size();
-                    int p = proxies.size();
-
-                    for(String key : accounts.keySet()) {
-                        boolean firstRun = true;
-                        liked = 0;
-
-                        //initialize parameters
-                        String username = key;
-                        String password = accounts.get(key);
-                        String url = tfURL.getText();
-                        String komentar = tfKomentar.getText();
-                        int port = Integer.parseInt(tfPort.getText());
-
-                        brojac++;
-
-                        if (brojac >= a / p) {
-                            counter = 0;
-                            indexP++;
+                    //handle inputs from necessary fields
+                    if(korisnickoIme.isEmpty() || lozinka.isEmpty() || url.isEmpty() || komentar.isEmpty()) {
+                        Error.showError("Popuni sva polja");
+                    }else {
+                        //execute comment action
+                        try {
+                            Comment.comment(url, komentar, korisnickoIme, lozinka);
+                        }catch (Exception e1) {
+                            e1.printStackTrace();
                         }
 
-                        if (indexP == p) {
-                            indexP = 0;
-                        }
+                        //execute like action
+                        if (accounts.size() > 0 && proxies.size() > 0 && urls.size() > 0) {
+                            int brojac = 0;
+                            int indexP = 0;
+                            int a = accounts.size();
+                            int p = proxies.size();
 
-                        while((session == 1 || firstRun) && liked == 0) {
-                            firstRun = false;
+                            for(String accKey : accounts.keySet()) {
+                                boolean firstRun = true;
+                                liked = 0;
 
-                            //handle inputs from necessary fields
-                            if (url.isEmpty() || komentar.isEmpty()) {
-                                Error.showError("Popuni neophodna polja");
-                            } else {
-                                //execute like action
-                                try {
-                                    Like.like(proxies.get(indexP), port, url, komentar, username, password);
-                                } catch (Exception e1) {
-                                    e1.printStackTrace();
+                                //initialize parameters
+                                String username = accKey;
+                                String password = accounts.get(accKey);
+                                int port = Integer.parseInt(tfPort.getText());
+
+                                //syncing proxies with accounts
+                                brojac++;
+
+                                if (brojac >= a / p) {
+                                    counter = 0;
+                                    indexP++;
+                                }
+
+                                if (indexP == p) {
+                                    indexP = 0;
+                                }
+
+                                //check if user liked video
+                                while ((session == 1 || firstRun) && liked == 0) {
+                                    firstRun = false;
+
+                                    //handle inputs from necessary fields
+                                    if (url.isEmpty() || komentar.isEmpty()) {
+                                        Error.showError("Popuni neophodna polja");
+                                    }else {
+                                        //execute like action
+                                        try {
+                                            Like.like(proxies.get(indexP), port, url, komentar, username, password);
+                                        } catch (Exception e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    }
                                 }
                             }
+                        } else {
+                            Error.showError("Ucitaj neophodne fajlove");
                         }
                     }
-
-                    Success.showMessage("Lajkovanje je zavrseno");
-                    }else {
-                    Error.showError("Ucitaj neophodne fajlove");
                 }
+
+                Success.showMessage("Zavrseno komentarisanje i ljakovanje");
             }
         });
 
         btnUcitajAdrese.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //get path of uploaded file
-                Path path = Paths.get(getFiles());
-                List<String> lines = null;
+                try{
+                    FileInputStream fstream = new FileInputStream(String.valueOf(Paths.get(getFiles())));
+                    DataInputStream in = new DataInputStream(fstream);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                    String line;
+                    counter2 = 0;
 
-                //store lines as elements in List
-                try {
-                    lines = Files.readAllLines(path, Charset.defaultCharset());
-                }catch (IOException e1) {
+                    while ((line = br.readLine()) != null) {
+                        proxies.add(line);
+
+                        counter2++;
+                        updateLabel(counter2, lblAdrese);
+                    }
+
+                    updateLabel(counter2, lblAdrese);
+
+                    in.close();
+                }catch (Exception e1){
                     e1.printStackTrace();
                 }
-
-                //extract proxies and increase proxy counter
-                for(String line : lines) {
-                    proxies.add(line);
-                    counter2++;
-                }
-
-                //update proxy counter label
-                updateLabel(counter2, lblAdrese);
             }
         });
 
         btnUcitajNaloge.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //get path of uploaded file
-                Path path = Paths.get(getFiles());
-                List<String> lines = null;
-
-                //store lines as elements in HashMap
-                try {
-                    lines = Files.readAllLines(path, Charset.defaultCharset());
-                }catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-
-                //extract accounts and increase account counter
-                for(String line : lines) {
-                    accounts.put(line.substring(0, line.indexOf("~")), line.substring(line.indexOf("~") + 1));
-                    counter++;
-                }
-
-                //update account counter label
-                updateLabel(counter, lblNalozi);
+                populateMap(accounts);
             }
         });
+
+        btnUcitajLinkove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                populateMap(urls);
+            }
+        });
+    }
+
+    private void populateMap(Map<String, String> hashMap) {
+        try{
+            FileInputStream fstream = new FileInputStream(String.valueOf(Paths.get(getFiles())));
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line;
+            counter = 0;
+            counter3 = 0;
+
+            while ((line = br.readLine()) != null) {
+                hashMap.put(line.substring(0, line.indexOf("~")), line.substring(line.indexOf("~") + 1));
+
+                if(hashMap == accounts) {
+                    counter++;
+                    updateLabel(counter, lblNalozi);
+                }else if(hashMap == urls) {
+                    counter3++;
+                    updateLabel(counter3, lblLinkovi);
+                }
+            }
+
+            in.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void updateLabel(int counter, JLabel label) {
@@ -162,6 +179,8 @@ public class Window {
             s = " adresa";
         }else if(label == lblNalozi) {
             s = " naloga";
+        }else if(label == lblLinkovi) {
+            s = " linkova";
         }
 
         label.setText(counter + s);

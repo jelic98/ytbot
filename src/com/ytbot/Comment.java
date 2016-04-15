@@ -53,7 +53,6 @@ public class Comment {
                 commentBox.click();
                 driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
                 driver.findElement(By.className("comment-simplebox-submit")).click();
-                Success.showMessage("Komentarisanje je zavrseno");
                 break;
             }
         }
