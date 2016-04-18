@@ -6,7 +6,6 @@ package com.ytbot;
         import java.awt.event.ActionEvent;
         import java.awt.event.ActionListener;
         import java.io.*;
-        import java.nio.charset.Charset;
         import java.nio.file.*;
         import java.util.*;
         import java.util.List;
@@ -25,79 +24,82 @@ public class Window {
     int counter3 = 0;
 
     public static int session = 0;
-    public static int liked;
+    public static int comment = 0;
+    public static int liked, commented;
 
     public Window() {
         btnKomentarisi.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String korisnickoIme = tfKorisnickoIme.getText();
+                String lozinka = tfLozinka.getText();
+                int port = Integer.parseInt(tfPort.getText());
+
+                if(korisnickoIme.isEmpty() || lozinka.isEmpty() || port == 0) {
+                    Error.showError("Popuni sva polja");
+                }else {
                 for(String key : urls.keySet()) {
                     //initialize parameters
-                    String korisnickoIme = tfKorisnickoIme.getText();
-                    String lozinka = tfLozinka.getText();
                     String url = key;
                     String komentar = urls.get(key);
+                    boolean firstRun = true;
 
-                    //handle inputs from necessary fields
-                    if(korisnickoIme.isEmpty() || lozinka.isEmpty() || url.isEmpty() || komentar.isEmpty()) {
-                        Error.showError("Popuni sva polja");
-                    }else {
-                        //execute comment action
-                        try {
-                            Comment.comment(url, komentar, korisnickoIme, lozinka);
-                        }catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
+                    //execute comment action
+                    while((comment == 1 || firstRun) && commented == 0) {
+                        firstRun = false;
 
                         //execute like action
-                        if (accounts.size() > 0 && proxies.size() > 0 && urls.size() > 0) {
-                            int brojac = 0;
-                            int indexP = 0;
-                            int a = accounts.size();
-                            int p = proxies.size();
-
-                            for(String accKey : accounts.keySet()) {
-                                boolean firstRun = true;
-                                liked = 0;
-
-                                //initialize parameters
-                                String username = accKey;
-                                String password = accounts.get(accKey);
-                                int port = Integer.parseInt(tfPort.getText());
-
-                                //syncing proxies with accounts
-                                brojac++;
-
-                                if (brojac >= a / p) {
-                                    counter = 0;
-                                    indexP++;
-                                }
-
-                                if (indexP == p) {
-                                    indexP = 0;
-                                }
-
-                                //check if user liked video
-                                while ((session == 1 || firstRun) && liked == 0) {
-                                    firstRun = false;
-
-                                    //handle inputs from necessary fields
-                                    if (url.isEmpty() || komentar.isEmpty()) {
-                                        Error.showError("Popuni neophodna polja");
-                                    }else {
-                                        //execute like action
-                                        try {
-                                            Like.like(proxies.get(indexP), port, url, komentar, username, password);
-                                        } catch (Exception e1) {
-                                            e1.printStackTrace();
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Error.showError("Ucitaj neophodne fajlove");
+                        try {
+                            Comment.comment(url, komentar, korisnickoIme, lozinka);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
                     }
+
+                    commented = 0;
+                    comment = 1;
+
+                    if (accounts.size() > 0 && proxies.size() > 0 && urls.size() > 0) {
+                        int brojac = 0;
+                        int indexP = 0;
+                        int a = accounts.size();
+                        int p = proxies.size();
+
+                        for(String accKey : accounts.keySet()) {
+                            boolean firstRunLike = true;
+                            liked = 0;
+
+                            //initialize parameters
+                            String username = accKey;
+                            String password = accounts.get(accKey);
+
+                            //syncing proxies with accounts
+                            brojac++;
+
+                            if (brojac >= a / p) {
+                                counter = 0;
+                                indexP++;
+                            }
+
+                            if (indexP == p) {
+                                indexP = 0;
+                            }
+
+                            //check if user liked video
+                            while ((session == 1 || firstRunLike) && liked == 0) {
+                                firstRunLike = false;
+                                //execute like action
+                                try {
+                                    Like.like(proxies.get(indexP), port, url, komentar, username, password);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                    } else {
+                        Error.showError("Ucitaj neophodne fajlove");
+                    }
+                }
                 }
 
                 Success.showMessage("Zavrseno komentarisanje i ljakovanje");

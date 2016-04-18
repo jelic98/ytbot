@@ -1,5 +1,7 @@
 package com.ytbot;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -40,20 +42,43 @@ public class Comment {
             driver.findElement(By.id("signIn")).click();
         }
 
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int i = 10;
+
+            public void run() {
+                if(i == 0) {
+                    Window.comment = 1;
+                    timer.cancel();
+                    driver.quit();
+                    return;
+                }
+
+                i--;
+            }
+        }, 0, 1000);
+
         JavascriptExecutor jse = (JavascriptExecutor)driver;
-        jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
         int pos = driver.manage().window().getSize().height;
 
-        while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
-            pos -= 50;
-            jse.executeScript("window.scrollTo(0 , " + pos + ")");
+        Thread.sleep(2500);
 
-            if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
-                WebElement commentBox = driver.findElement(By.className("comment-simplebox-renderer-collapsed-content"));
-                commentBox.click();
-                driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
-                driver.findElement(By.className("comment-simplebox-submit")).click();
-                break;
+        if(driver.toString() != null) {
+            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
+
+            while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+                pos -= 50;
+                jse.executeScript("window.scrollTo(0 , " + pos + ")");
+
+                if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                    WebElement commentBox = driver.findElement(By.className("comment-simplebox-renderer-collapsed-content"));
+                    commentBox.click();
+                    driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
+                    driver.findElement(By.className("comment-simplebox-submit")).click();
+                    Window.commented = 1;
+                    timer.cancel();
+                    break;
+                }
             }
         }
     }

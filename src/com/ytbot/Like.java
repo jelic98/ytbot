@@ -39,8 +39,6 @@ public class Like {
         driver.manage().window().maximize();
         driver.get(url);
 
-        Thread.sleep(1000);
-
         isPresent = driver.findElements(By.className("signin-container ")).size();
 
         if(isPresent > 0) {
@@ -62,6 +60,7 @@ public class Like {
                 if(i == 0) {
                     Window.session = 1;
                     timer.cancel();
+                    driver.quit();
                     return;
                 }
 
@@ -69,9 +68,12 @@ public class Like {
             }
         }, 0, 1000);
 
+        int pos = driver.manage().window().getSize().height;
+
+        Thread.sleep(2500);
+
         if(driver.toString() != null) {
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
-            int pos = driver.manage().window().getSize().height;
 
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
                 pos -= 50;
