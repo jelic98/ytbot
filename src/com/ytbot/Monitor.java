@@ -3,6 +3,8 @@ package com.ytbot;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class Monitor {
     public JPanel panel;
@@ -12,6 +14,7 @@ public class Monitor {
     public JLabel lRateAccount;
     public JTable table;
     public static DefaultTableModel model;
+    public static JFrame frame = new JFrame();
 
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static int width = (int) (screenSize.getWidth() * 0.5);
@@ -38,6 +41,43 @@ public class Monitor {
 
         JScrollPane scrollPane = new JScrollPane(table);
         panel.add(scrollPane);
+
+        frame.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                Main.monitorShown = false;
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
     }
 
     public static void updateCounter(int x, int y, String flag, JLabel label1, JLabel label2) {
@@ -70,7 +110,6 @@ public class Monitor {
     }
 
     public static void newScreen() {
-        JFrame frame = new JFrame();
         frame.setTitle("YTBot Monitor");
         frame.setSize(new Dimension(width, height));
         frame.setLocation(screenSize.width / 2 - width / 2,screenSize.height / 2 - height / 2);

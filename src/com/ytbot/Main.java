@@ -1,6 +1,8 @@
 package com.ytbot;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +14,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.List;
 
-public class Main {
+public class Main implements DocumentListener {
     private JPanel panel;
     private JLabel lURL, lAccount, lProxy, lDelayAccount, lUsername, lPassword, lPort, lThreads, lEcloga;
     private JTextField tfURL, tfUsername, tfPassword, tfKomentar, tfPort, tfThreads, tfDelayAccount;
@@ -22,11 +24,16 @@ public class Main {
     private JScrollPane scrollProxy, scrollAccount, scrollURL;
     private JOptionPane optionPane = new JOptionPane();
 
+    JTextField[] fields = {tfUsername, tfPassword, tfThreads, tfDelayAccount, tfPort};
+    JCheckBox[] checks = {cLike, cProxy};
+
     List<String> proxies = new ArrayList<String>();
     Map<String, String> accounts = new HashMap<String, String>();
     Map<String, String> urls = new HashMap<String, String>();
 
     String dirName = System.getProperty("user.home") + "/ytbot";
+
+    DefaultListModel listModel = new DefaultListModel();
 
     //account
     private static int counter = 0;
@@ -49,20 +56,27 @@ public class Main {
     public static int started = 0;
     public static int abort = 0;
 
-    private static boolean monitorShown = false;
+    public static boolean monitorShown = false;
+
     private static boolean useProxy = true;
     private static boolean useLike = true;
 
     public Main() {
         Monitor monitor = new Monitor();
+
         createFolder();
+
         lEcloga.setForeground(Color.GRAY);
+
+        listURL.setModel(new DefaultListModel());
+        listAccount.setModel(new DefaultListModel());
+        listProxy.setModel(new DefaultListModel());
 
         bStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(tfUsername.getText().isEmpty() || tfPassword.getText().isEmpty()) {
-                    Error.showError("FIll out all required fields");
+                    Error.showError("Username and password are required");
                     started = 0;
                 }else {
                     //get values from text fields
@@ -241,7 +255,10 @@ public class Main {
         bLoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo load previous lists
+                loadMap(urls, "url.txt");
+                loadMap(accounts, "account.txt");
+                loadList();
+                loadFields();
             }
         });
 
@@ -274,6 +291,7 @@ public class Main {
             public void itemStateChanged(ItemEvent e) {
                 useProxy = !useProxy;
                 changeProxy(useProxy);
+                saveFieldsToFile();
             }
         });
 
@@ -282,8 +300,11 @@ public class Main {
             public void itemStateChanged(ItemEvent e) {
                 useLike = !useLike;
                 changeLike(useLike);
+                saveFieldsToFile();
             }
         });
+
+        tfUsername.getDocument().addDocumentListener(this);
 
         bMonitor.addActionListener(new ActionListener() {
             @Override
@@ -296,6 +317,206 @@ public class Main {
                 }
             }
         });
+
+        bClearURL.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listModel.removeAllElements();
+                listURL.setModel(listModel);
+                lURL.setText("URL: 0");
+                urls.clear();
+                saveMapToFile("url.txt", urls);
+            }
+        });
+
+        bClearAccount.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listModel.removeAllElements();
+                listAccount.setModel(listModel);
+                lAccount.setText("Account: 0");
+                accounts.clear();
+                saveMapToFile("account.txt", accounts);
+            }
+        });
+
+        bClearProxy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listModel.removeAllElements();
+                listProxy.setModel(listModel);
+                lProxy.setText("Proxy: 0");
+                proxies.clear();
+                saveListToFile("proxy.txt", proxies);
+            }
+        });
+
+        bRemoveURL.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultListModel model = (DefaultListModel) listURL.getModel();
+                int selectedIndex = listURL.getSelectedIndex();
+                String line = listURL.getSelectedValue().toString();
+
+                if (selectedIndex != -1) {
+                    model.remove(selectedIndex);
+                    urls.remove(line.substring(0, line.indexOf("~")));
+                    saveMapToFile("url.txt", urls);
+                }
+            }
+        });
+
+        bRemoveAccount.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultListModel model = (DefaultListModel) listAccount.getModel();
+                int selectedIndex = listAccount.getSelectedIndex();
+                String line = listAccount.getSelectedValue().toString();
+
+                if (selectedIndex != -1) {
+                    model.remove(selectedIndex);
+                    accounts.remove(line.substring(0, line.indexOf("~")));
+                    saveMapToFile("account.txt", accounts);
+                }
+            }
+        });
+
+        bRemoveProxy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultListModel model = (DefaultListModel) listProxy.getModel();
+                int selectedIndex = listProxy.getSelectedIndex();
+                String line = listProxy.getSelectedValue().toString();
+
+                if(selectedIndex != -1) {
+                    model.remove(selectedIndex);
+                    proxies.remove(proxies.indexOf(line));
+                    saveListToFile("proxy.txt", proxies);
+                }
+            }
+        });
+
+        bAddURL.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = JOptionPane.showInputDialog(null, "Add URL");
+
+                if(name != null && !name.isEmpty()) {
+                    if(!name.contains("~")) {
+                        Error.showError("Format: URL~COMMENT");
+                    }else {
+                        DefaultListModel model = (DefaultListModel) listURL.getModel();
+                        model.addElement(name);
+
+                        urls.put(name.substring(0, name.indexOf("~")), name.substring(name.indexOf("~") + 1));
+
+                        saveMapToFile("url.txt", urls);
+                    }
+                }
+            }
+        });
+
+        bAddAccount.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = JOptionPane.showInputDialog(null, "Add account");
+
+                if(name != null && !name.isEmpty()) {
+                    if(!name.contains("~")) {
+                        Error.showError("Format: USERNAME~PASSWORD");
+                    }else {
+                        DefaultListModel model = (DefaultListModel) listAccount.getModel();
+                        model.addElement(name);
+
+                        accounts.put(name.substring(0, name.indexOf("~")), name.substring(name.indexOf("~") + 1));
+
+                        saveMapToFile("account.txt", accounts);
+                    }
+                }
+            }
+        });
+
+        bAddProxy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = JOptionPane.showInputDialog(null, "Add proxy");
+
+                if(name != null && !name.isEmpty()) {
+                    DefaultListModel model = (DefaultListModel) listProxy.getModel();
+                    model.addElement(name);
+
+                    proxies.add(name);
+
+                    saveListToFile("proxy.txt", proxies);
+                }
+            }
+        });
+    }
+
+    private void loadMap(Map<String, String> hashMap, String fileName) {
+        try{
+            FileInputStream fs = new FileInputStream(dirName + "/" + fileName);
+            DataInputStream in = new DataInputStream(fs);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line;
+            counter = 0;
+            counter3 = 0;
+            DefaultListModel listModel = new DefaultListModel();
+
+            while((line = br.readLine()) != null) {
+                hashMap.put(line.substring(0, line.indexOf("~")), line.substring(line.indexOf("~") + 1));
+
+                if(hashMap == accounts) {
+                    counter++;
+                    updateLabel(counter, lAccount);
+                }else if(hashMap == urls) {
+                    counter3++;
+                    updateLabel(counter3, lURL);
+                }
+
+                listModel.addElement(line);
+            }
+
+            if(hashMap == accounts) {
+                listAccount.setModel(listModel);
+            }else if(hashMap == urls) {
+                listURL.setModel(listModel);
+            }
+
+            in.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void loadList() {
+        File f = new File(dirName + "/proxy.txt");
+
+        try {
+            FileInputStream fs = new FileInputStream(f);
+            DataInputStream in = new DataInputStream(fs);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line;
+            counter2 = 0;
+            DefaultListModel listModel = new DefaultListModel();
+
+            while((line = br.readLine()) != null) {
+                proxies.add(line);
+
+                listModel.addElement(line);
+
+                counter2++;
+                updateLabel(counter2, lProxy);
+            }
+
+            listProxy.setModel(listModel);
+
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void changeProxy(boolean value) {
@@ -373,6 +594,50 @@ public class Main {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveFieldsToFile() {
+        try {
+            PrintWriter w = new PrintWriter(dirName + "/fields.txt", "UTF-8");
+
+            for(JTextField field : fields) {
+                w.println(field.getText());
+            }
+
+            for(JCheckBox check : checks) {
+                w.println(check.isSelected());
+            }
+
+            w.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadFields() {
+        try{
+            FileInputStream fs = new FileInputStream(dirName + "/fields.txt");
+            DataInputStream in = new DataInputStream(fs);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line;
+            int i = 0;
+
+            while((line = br.readLine()) != null) {
+                i++;
+
+                if(i <= 5) {
+                    fields[i - 1].setText(line);
+                }else {
+                    checks[i - 6].setSelected(Boolean.valueOf(line));
+                }
+            }
+
+            in.close();
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -479,5 +744,20 @@ public class Main {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        saveFieldsToFile();
     }
 }
