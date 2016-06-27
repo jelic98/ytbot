@@ -77,16 +77,6 @@
           <text value="Remove"/>
         </properties>
       </component>
-      <component id="27b71" class="javax.swing.JList" binding="listURL">
-        <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-          <forms defaultalign-horz="false"/>
-        </constraints>
-        <properties>
-          <preferredSize width="200" height="500"/>
-          <selectionMode value="0"/>
-        </properties>
-      </component>
       <component id="b2622" class="javax.swing.JButton" binding="bRemoveAccount">
         <constraints>
           <grid row="6" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -132,16 +122,6 @@
           <text value="Account: 0"/>
         </properties>
       </component>
-      <component id="d93b7" class="javax.swing.JList" binding="listAccount">
-        <constraints>
-          <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-          <forms defaultalign-horz="false"/>
-        </constraints>
-        <properties>
-          <preferredSize width="200" height="500"/>
-          <selectionMode value="0"/>
-        </properties>
-      </component>
       <component id="9fff2" class="javax.swing.JButton" binding="bRemoveProxy">
         <constraints>
           <grid row="6" column="6" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -185,16 +165,6 @@
         </constraints>
         <properties>
           <text value="Proxy: 0"/>
-        </properties>
-      </component>
-      <component id="2d9a7" class="javax.swing.JList" binding="listProxy">
-        <constraints>
-          <grid row="2" column="6" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-          <forms defaultalign-horz="false"/>
-        </constraints>
-        <properties>
-          <preferredSize width="200" height="500"/>
-          <selectionMode value="0"/>
         </properties>
       </component>
       <grid id="b9b83" layout-manager="FormLayout">
@@ -498,6 +468,57 @@
           <text value="YTBot v2.0"/>
         </properties>
       </component>
+      <scrollpane id="5e06e" binding="scrollProxy">
+        <constraints>
+          <grid row="2" column="6" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="2d9a7" class="javax.swing.JList" binding="listProxy">
+            <constraints/>
+            <properties>
+              <preferredSize width="200" height="500"/>
+              <selectionMode value="0"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <scrollpane id="a39f8" binding="scrollURL">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="27b71" class="javax.swing.JList" binding="listURL">
+            <constraints/>
+            <properties>
+              <preferredSize width="200" height="500"/>
+              <selectionMode value="0"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <scrollpane id="2fa8e" binding="scrollAccount">
+        <constraints>
+          <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="d93b7" class="javax.swing.JList" binding="listAccount">
+            <constraints/>
+            <properties>
+              <preferredSize width="200" height="500"/>
+              <selectionMode value="0"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
     </children>
   </grid>
 </form>

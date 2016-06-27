@@ -7,40 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5db22fa-4881-4743-b51c-571bdb4a1898" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/ytbot/Monitor.form" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/ytbot/Monitor.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Success.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$2.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$3.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$4.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window$5.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Window.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/ytbot/Success.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/ytbot/Window.form" afterPath="$PROJECT_DIR$/src/com/ytbot/Main.form" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/ytbot/Window.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/AbstractLayout.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/AbstractLayout.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/DimensionInfo.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/DimensionInfo.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/GridConstraints.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/GridConstraints.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/GridLayoutManager.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/GridLayoutManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/HorizontalInfo.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/HorizontalInfo.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/LayoutState.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/LayoutState.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/Spacer.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/Spacer.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/SupportCode$TextWithMnemonic.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/SupportCode$TextWithMnemonic.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/SupportCode.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/SupportCode.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/Util.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/Util.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/VerticalInfo.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/intellij/uiDesigner/core/VerticalInfo.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Comment.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Comment.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Error.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Error.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Like.class" afterPath="$PROJECT_DIR$/out/production/ytbot/com/ytbot/Like.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Comment.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Comment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Error.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Error.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Like.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Like.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Proxy.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Proxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ytbot.iml" afterPath="$PROJECT_DIR$/ytbot.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Main.form" afterPath="$PROJECT_DIR$/src/com/ytbot/Main.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ytbot/Main.java" afterPath="$PROJECT_DIR$/src/com/ytbot/Main.java" />
     </list>
     <ignored path="ytbot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -62,19 +30,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ytbot/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="422" column="8" selection-start-line="422" selection-start-column="8" selection-end-line="422" selection-end-column="95" />
+            <state relative-caret-position="67">
+              <caret line="57" column="23" selection-start-line="57" selection-start-column="23" selection-end-line="57" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1043#1051#0" expanded="true" />
+                <element signature="e#1101#1117#0" expanded="true" />
+                <element signature="e#1163#1179#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.form" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Main.form" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ytbot/Main.form">
           <provider selected="true" editor-type-id="ui-designer">
             <state />
@@ -84,8 +55,8 @@
       <file leaf-file-name="Monitor.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ytbot/Monitor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-367">
-              <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+            <state relative-caret-position="263">
+              <caret line="35" column="43" selection-start-line="35" selection-start-column="43" selection-end-line="35" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1926#1927#0" expanded="true" />
@@ -163,9 +134,9 @@
         <option value="$PROJECT_DIR$/src/com/ytbot/Comment.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Like.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Monitor.form" />
-        <option value="$PROJECT_DIR$/src/com/ytbot/Main.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Monitor.java" />
         <option value="$PROJECT_DIR$/src/com/ytbot/Main.form" />
+        <option value="$PROJECT_DIR$/src/com/ytbot/Main.java" />
       </list>
     </option>
   </component>
@@ -918,6 +889,9 @@
           <caret line="85" column="39" selection-start-line="85" selection-start-column="39" selection-end-line="85" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1043#1051#0" expanded="true" />
+            <element signature="e#1101#1117#0" expanded="true" />
+            <element signature="e#1163#1179#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -970,6 +944,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1043#1051#0" expanded="true" />
+            <element signature="e#1101#1117#0" expanded="true" />
+            <element signature="e#1163#1179#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1022,6 +999,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1043#1051#0" expanded="true" />
+            <element signature="e#1101#1117#0" expanded="true" />
+            <element signature="e#1163#1179#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1074,6 +1054,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1043#1051#0" expanded="true" />
+            <element signature="e#1101#1117#0" expanded="true" />
+            <element signature="e#1163#1179#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1118,6 +1101,9 @@
           <caret line="41" column="77" selection-start-line="41" selection-start-column="77" selection-end-line="41" selection-end-column="77" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1043#1051#0" expanded="true" />
+            <element signature="e#1101#1117#0" expanded="true" />
+            <element signature="e#1163#1179#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1138,6 +1124,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1043#1051#0" expanded="true" />
+            <element signature="e#1101#1117#0" expanded="true" />
+            <element signature="e#1163#1179#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1158,6 +1147,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1043#1051#0" expanded="true" />
+            <element signature="e#1101#1117#0" expanded="true" />
+            <element signature="e#1163#1179#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1258,28 +1250,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="422" column="8" selection-start-line="422" selection-start-column="8" selection-end-line="422" selection-end-column="95" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Monitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-367">
-          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1926#1927#0" expanded="true" />
-            <element signature="e#1953#1954#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ytbot/Main.form">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1289,6 +1259,31 @@
       </provider>
       <provider selected="true" editor-type-id="ui-designer">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Monitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="35" column="43" selection-start-line="35" selection-start-column="43" selection-end-line="35" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1926#1927#0" expanded="true" />
+            <element signature="e#1953#1954#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ytbot/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="67">
+          <caret line="57" column="23" selection-start-line="57" selection-start-column="23" selection-end-line="57" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1043#1051#0" expanded="true" />
+            <element signature="e#1101#1117#0" expanded="true" />
+            <element signature="e#1163#1179#0" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
   </component>

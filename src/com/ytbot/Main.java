@@ -17,15 +17,16 @@ public class Main {
     private JLabel lURL, lAccount, lProxy, lDelayAccount, lUsername, lPassword, lPort, lThreads, lEcloga;
     private JTextField tfURL, tfUsername, tfPassword, tfKomentar, tfPort, tfThreads, tfDelayAccount;
     private JList listURL, listAccount, listProxy;
-    private JButton bStart, bLoadAccount, bLoadProxy, bLoadURL, bLoad, bAbort, bInfo, bClearURL, bAddURL, bRemoveURL, bClearAccount, bAddAccount, bRemoveAccount, bClearProxy, bAddProxy, bRemoveProxy;
-    private JCheckBox cProxy;
-    private JCheckBox cLike;
-    private JButton bMonitor;
+    private JButton bStart, bMonitor, bLoadAccount, bLoadProxy, bLoadURL, bLoad, bAbort, bInfo, bClearURL, bAddURL, bRemoveURL, bClearAccount, bAddAccount, bRemoveAccount, bClearProxy, bAddProxy, bRemoveProxy;
+    private JCheckBox cProxy, cLike;
+    private JScrollPane scrollProxy, scrollAccount, scrollURL;
     private JOptionPane optionPane = new JOptionPane();
 
     List<String> proxies = new ArrayList<String>();
     Map<String, String> accounts = new HashMap<String, String>();
     Map<String, String> urls = new HashMap<String, String>();
+
+    String dirName = System.getProperty("user.home") + "/ytbot";
 
     //account
     private static int counter = 0;
@@ -54,7 +55,7 @@ public class Main {
 
     public Main() {
         Monitor monitor = new Monitor();
-
+        createFolder();
         lEcloga.setForeground(Color.GRAY);
 
         bStart.addActionListener(new ActionListener() {
@@ -216,6 +217,8 @@ public class Main {
                 }catch (Exception e1){
                     e1.printStackTrace();
                 }
+
+                saveListToFile("proxy.txt", proxies);
             }
         });
 
@@ -223,6 +226,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 populateMap(accounts);
+                saveMapToFile("account.txt", accounts);
             }
         });
 
@@ -230,6 +234,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 populateMap(urls);
+                saveMapToFile("url.txt", urls);
             }
         });
 
@@ -300,6 +305,8 @@ public class Main {
         bRemoveProxy.setEnabled(value);
 
         lProxy.setEnabled(value);
+        scrollProxy.setEnabled(value);
+        listProxy.setEnabled(value);
 
         tfPort.setEnabled(value);
         lPort.setEnabled(value);
@@ -315,11 +322,58 @@ public class Main {
         tfDelayAccount.setEnabled(value);
 
         lAccount.setEnabled(value);
+        scrollAccount.setEnabled(value);
+        listAccount.setEnabled(value);
 
         cProxy.setEnabled(value);
 
         if(cProxy.isSelected()) {
             changeProxy(value);
+        }
+    }
+
+    private void createFolder() {
+        File theDir = new File(dirName);
+
+        if(!theDir.exists()) {
+            try{
+                theDir.mkdir();
+            }
+            catch(SecurityException se){
+                se.printStackTrace();
+            }
+        }
+    }
+
+    private void saveMapToFile(String fileName, Map<String, String> map) {
+        try {
+            PrintWriter w = new PrintWriter(dirName + "/" + fileName, "UTF-8");
+
+            for(String line : map.keySet()) {
+                w.println(line + "~" + map.get(line));
+            }
+
+            w.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveListToFile(String fileName, List<String> list) {
+        try {
+            PrintWriter w = new PrintWriter(dirName + "/" + fileName, "UTF-8");
+
+            for(String line : list) {
+                w.println(line);
+            }
+
+            w.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
