@@ -1,5 +1,7 @@
 package com.ytbot;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -7,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import org.omg.CORBA.SystemException;
 import org.openqa.selenium.*;
 
 public class Like {
@@ -15,6 +16,10 @@ public class Like {
     public static StringBuffer verificationErrors = new StringBuffer();
     public static String globalIP;
     public static int globalPort;
+
+
+    private static Calendar cal = Calendar.getInstance();
+    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
     public static void like(String ip, int port, String url, String comment, String username, String password) throws Exception {
         setUp(ip, port);
@@ -32,6 +37,8 @@ public class Like {
 
     @Test
     public static void testLike(String url, String comment, String username, String password) throws Exception {
+        Monitor.model.addRow(new Object[]{url + "~" + comment, username + "~" + password, globalIP + ":" + globalPort, "Like", "Started", sdf.format(cal.getTime())});
+
         int isPresent;
         JavascriptExecutor jse = (JavascriptExecutor) driver;
         WebElement more;
@@ -58,7 +65,7 @@ public class Like {
 
             public void run() {
                 if(i == 0) {
-                    Window.session = 1;
+                    Main.session = 1;
                     timer.cancel();
                     driver.quit();
                     return;
@@ -76,10 +83,16 @@ public class Like {
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
 
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+                Long old = (Long) jse.executeScript("return window.scrollY;");
                 pos -= 50;
                 jse.executeScript("window.scrollTo(0 , " + pos + ")");
+                Long current = (Long) jse.executeScript("return window.scrollY;");
 
-                if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                if(current > old) {
+                    if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                        break;
+                    }
+                }else {
                     break;
                 }
             }
@@ -110,7 +123,7 @@ public class Like {
                         if(element.getAttribute("data-action-type").equals("like")
                                 && element.getCssValue("color").equals("rgba(51, 51, 51, 1)")) {
                             element.click();
-                            Window.liked = 1;
+                            Main.liked = 1;
                             timer.cancel();
                             break;
                         }
@@ -118,6 +131,8 @@ public class Like {
                 }
             }
         }
+
+        Monitor.model.addRow(new Object[]{url + "~" + comment, username + "~" + password, globalIP + ":" + globalPort, "Like", "Finished", sdf.format(cal.getTime())});
     }
 
     public static boolean textExists(String text){

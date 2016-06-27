@@ -1,5 +1,7 @@
 package com.ytbot;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +13,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class Comment {
     public static WebDriver driver;
     public static StringBuffer verificationErrors = new StringBuffer();
+
+    private static Calendar cal = Calendar.getInstance();
+    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
     public static void comment(String url, String comment, String username, String password) throws Exception {
         setUp();
@@ -26,6 +31,8 @@ public class Comment {
 
     @Test
     public static void testComment(String url, String comment, String username, String password) throws Exception {
+        Monitor.model.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Started", sdf.format(cal.getTime())});
+
         driver.manage().window().maximize();
         driver.get(url);
 
@@ -48,7 +55,7 @@ public class Comment {
 
             public void run() {
                 if(i == 0) {
-                    Window.comment = 1;
+                    Main.comment = 1;
                     timer.cancel();
                     driver.quit();
                     return;
@@ -67,20 +74,28 @@ public class Comment {
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
 
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+                Long old = (Long) jse.executeScript("return window.scrollY;");
                 pos -= 50;
                 jse.executeScript("window.scrollTo(0 , " + pos + ")");
+                Long current = (Long) jse.executeScript("return window.scrollY;");
 
-                if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
-                    WebElement commentBox = driver.findElement(By.className("comment-simplebox-renderer-collapsed-content"));
-                    commentBox.click();
-                    driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
-                    driver.findElement(By.className("comment-simplebox-submit")).click();
-                    Window.commented = 1;
-                    timer.cancel();
+                if(current > old) {
+                    if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                        WebElement commentBox = driver.findElement(By.className("comment-simplebox-renderer-collapsed-content"));
+                        commentBox.click();
+                        driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
+                        driver.findElement(By.className("comment-simplebox-submit")).click();
+                        Main.commented = 1;
+                        timer.cancel();
+                        break;
+                    }
+                }else {
                     break;
                 }
             }
         }
+
+        Monitor.model.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Finished", sdf.format(cal.getTime())});
     }
 
     @After

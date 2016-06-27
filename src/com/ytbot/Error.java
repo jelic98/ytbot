@@ -4,6 +4,6 @@ import javax.swing.*;
 
 public class Error {
     public static void showError(String infoMessage) {
-        JOptionPane.showMessageDialog(null, infoMessage, "Greska", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, infoMessage, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
