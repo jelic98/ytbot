@@ -276,13 +276,6 @@
                   <text value="Start"/>
                 </properties>
               </component>
-              <component id="e9876" class="javax.swing.JButton" binding="bMonitor">
-                <constraints/>
-                <properties>
-                  <label value="Monitor"/>
-                  <text value="Monitor"/>
-                </properties>
-              </component>
               <component id="3032" class="javax.swing.JButton" binding="bAbort">
                 <constraints/>
                 <properties>
@@ -409,7 +402,10 @@
           <grid row="2" column="2" row-span="3" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <forms defaultalign-horz="false" defaultalign-vert="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <horizontalScrollBarPolicy value="30"/>
+          <verticalScrollBarPolicy value="20"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="27b71" class="javax.swing.JList" binding="listURL">

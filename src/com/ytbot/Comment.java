@@ -2,8 +2,6 @@ package com.ytbot;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -11,17 +9,17 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class Comment {
-    public static WebDriver driver;
-    public static StringBuffer verificationErrors = new StringBuffer();
+    private static WebDriver driver;
+    private static StringBuffer verificationErrors = new StringBuffer();
 
-    private static Calendar cal = Calendar.getInstance();
+    private static Calendar cal;
     private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-    public static void comment(String url, String comment, String username, String password) throws Exception {
-        setUp();
-        testComment(url, comment, username, password);
-        tearDown();
-    }
+    private static int finished = 0;
+    private static int runs = 0;
+    private static final int RUN_LIMIT = 3;
+
+    private static int counter = 0;
 
     @Before
     public static void setUp() throws Exception {
@@ -29,10 +27,43 @@ public class Comment {
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
+
+    public static void comment(String url, String comment, String username, String password) throws Exception {
+        setUp();
+
+        counter = Monitor.commentCounter;
+
+        Monitor monitor = new Monitor();
+
+        cal = Calendar.getInstance();
+        monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Started", sdf.format(cal.getTime())});
+
+        while(finished == 0) {
+            runs++;
+
+            if(runs < RUN_LIMIT) {
+                testComment(url, comment, username, password);
+            }else {
+                break;
+            }
+        }
+
+        cal = Calendar.getInstance();
+
+        if(finished == 1) {
+            counter++;
+
+            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Finished", sdf.format(cal.getTime())});
+            monitor.updateCounter(counter, Main.urls.size(), "comment", monitor.lCounterURL, monitor.lRateURL);
+        }else {
+            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Error", sdf.format(cal.getTime())});
+        }
+
+        tearDown();
+    }
+
     @Test
     public static void testComment(String url, String comment, String username, String password) throws Exception {
-        Monitor.model.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Started", sdf.format(cal.getTime())});
-
         driver.manage().window().maximize();
         driver.get(url);
 
@@ -49,29 +80,13 @@ public class Comment {
             driver.findElement(By.id("signIn")).click();
         }
 
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            int i = 10;
-
-            public void run() {
-                if(i == 0) {
-                    Main.comment = 1;
-                    timer.cancel();
-                    driver.quit();
-                    return;
-                }
-
-                i--;
-            }
-        }, 0, 1000);
-
         JavascriptExecutor jse = (JavascriptExecutor)driver;
         int pos = driver.manage().window().getSize().height;
 
         Thread.sleep(2500);
 
         if(driver.toString() != null) {
-            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
+            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height  / 2 + ")");
 
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
                 Long old = (Long) jse.executeScript("return window.scrollY;");
@@ -85,8 +100,7 @@ public class Comment {
                         commentBox.click();
                         driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
                         driver.findElement(By.className("comment-simplebox-submit")).click();
-                        Main.commented = 1;
-                        timer.cancel();
+                        finished = 1;
                         break;
                     }
                 }else {
@@ -94,8 +108,6 @@ public class Comment {
                 }
             }
         }
-
-        Monitor.model.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Finished", sdf.format(cal.getTime())});
     }
 
     @After

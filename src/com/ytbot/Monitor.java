@@ -3,8 +3,6 @@ package com.ytbot;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 public class Monitor {
     public JPanel panel;
@@ -12,10 +10,11 @@ public class Monitor {
     public JLabel lCounterAccount;
     public JLabel lRateURL;
     public JLabel lRateAccount;
-    public JTable table;
-    public static DefaultTableModel model;
-    public static JFrame frame = new JFrame();
-
+    private static JTable table;
+    private static DefaultTableModel model;
+    private static JFrame frame = new JFrame();
+    public static int commentCounter = 0;
+    public static int likeCounter = 0;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static int width = (int) (screenSize.getWidth() * 0.5);
     private static int height = (int) (screenSize.getHeight() * 0.75);
@@ -41,43 +40,6 @@ public class Monitor {
 
         JScrollPane scrollPane = new JScrollPane(table);
         panel.add(scrollPane);
-
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                Main.monitorShown = false;
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
     }
 
     public static void updateCounter(int x, int y, String flag, JLabel label1, JLabel label2) {
@@ -87,9 +49,13 @@ public class Monitor {
         float z = 100 * x / y;
 
         if(flag.equals("comment")) {
+            commentCounter = x;
+
             s1 = "Videos commented: ";
             s2 = "Comment success rate: ";
         }else if(flag.equals("like")) {
+            likeCounter = x;
+
             s1 = "Comments liked: ";
             s2 = "Comments liked: ";
         }
@@ -105,11 +71,11 @@ public class Monitor {
         label2.setText(s2);
     }
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
         newScreen();
     }
 
-    public static void newScreen() {
+    public void newScreen() {
         frame.setTitle("YTBot Monitor");
         frame.setSize(new Dimension(width, height));
         frame.setLocation(screenSize.width / 2 - width / 2,screenSize.height / 2 - height / 2);
@@ -117,5 +83,10 @@ public class Monitor {
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
+    }
+
+    public void addRow(Object[] row) {
+        model.addRow(row);
+        table.setModel(model);
     }
 }

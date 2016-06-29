@@ -19,19 +19,18 @@ public class Main implements DocumentListener {
     private JLabel lURL, lAccount, lProxy, lDelayAccount, lUsername, lPassword, lPort, lThreads, lEcloga;
     private JTextField tfURL, tfUsername, tfPassword, tfKomentar, tfPort, tfThreads, tfDelayAccount;
     private JList listURL, listAccount, listProxy;
-    private JButton bStart, bMonitor, bLoadAccount, bLoadProxy, bLoadURL, bLoad, bAbort, bInfo, bClearURL, bAddURL, bRemoveURL, bClearAccount, bAddAccount, bRemoveAccount, bClearProxy, bAddProxy, bRemoveProxy;
+    private JButton bStart, bLoadAccount, bLoadProxy, bLoadURL, bLoad, bAbort, bInfo, bClearURL, bAddURL, bRemoveURL, bClearAccount, bAddAccount, bRemoveAccount, bClearProxy, bAddProxy, bRemoveProxy;
     private JCheckBox cProxy, cLike;
     private JScrollPane scrollProxy, scrollAccount, scrollURL;
-    private JOptionPane optionPane = new JOptionPane();
 
     JTextField[] fields = {tfUsername, tfPassword, tfThreads, tfDelayAccount, tfPort};
     JCheckBox[] checks = {cLike, cProxy};
 
-    List<String> proxies = new ArrayList<String>();
-    Map<String, String> accounts = new HashMap<String, String>();
-    Map<String, String> urls = new HashMap<String, String>();
+    public static List<String> proxies = new ArrayList<String>();
+    public static Map<String, String> accounts = new HashMap<String, String>();
+    public static Map<String, String> urls = new HashMap<String, String>();
 
-    String dirName = System.getProperty("user.home") + "/ytbot";
+    public static String dirName = System.getProperty("user.home") + "/ytbot";
 
     DefaultListModel listModel = new DefaultListModel();
 
@@ -41,9 +40,6 @@ public class Main implements DocumentListener {
     private static int counter2 = 0;
     //url
     private static int counter3 = 0;
-
-    private static int videosCommented = 0;
-    private static int commentsLiked = 0;
 
     private static int delay = 0;
     private static int threads = 1;
@@ -56,7 +52,7 @@ public class Main implements DocumentListener {
     public static int started = 0;
     public static int abort = 0;
 
-    public static boolean monitorShown = false;
+    public static boolean globalProxyFlag = true;
 
     private static boolean useProxy = true;
     private static boolean useLike = true;
@@ -79,128 +75,130 @@ public class Main implements DocumentListener {
                     Error.showError("Username and password are required");
                     started = 0;
                 }else {
-                    //get values from text fields
-                    String korisnickoIme = tfUsername.getText();
-                    String lozinka = tfPassword.getText();
+                    if (urls.size() > 0) {
+                        //start logging
+                        monitor.newScreen();
 
-                    if(!tfPort.getText().isEmpty() && useProxy) {
-                        port = Integer.parseInt(tfPort.getText());
-                    }
+                        //get values from text fields
+                        String korisnickoIme = tfUsername.getText();
+                        String lozinka = tfPassword.getText();
 
-                    if(!tfDelayAccount.getText().isEmpty() && useLike) {
-                        delay = Integer.parseInt(tfDelayAccount.getText());
-                    }
-
-                    if(!tfThreads.getText().isEmpty()) {
-                        threads = Integer.parseInt(tfThreads.getText());
-                    }
-
-                    //change process status
-                    started = 1;
-
-                for(String key : urls.keySet()) {
-                    if(abort == 1) {
-                        optionPane.showMessageDialog(null, "Process is successfully aborted", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        break;
-                    }
-
-                    //initialize parameters
-                    String url = key;
-                    String komentar = urls.get(key);
-                    boolean firstRun = true;
-
-                    //execute comment action
-                    while((comment == 1 || firstRun) && commented == 0) {
-                        if(abort == 1) {
-                            optionPane.showMessageDialog(null, "Process is successfully aborted", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            break;
+                        if (!tfPort.getText().isEmpty() && useProxy && cProxy.isEnabled()) {
+                            port = Integer.parseInt(tfPort.getText());
                         }
 
-                        firstRun = false;
-
-                        //execute like action
-                        try {
-                            Comment.comment(url, komentar, korisnickoIme, lozinka);
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
+                        if (!tfDelayAccount.getText().isEmpty() && useLike && cLike.isEnabled()) {
+                            delay = Integer.parseInt(tfDelayAccount.getText());
                         }
 
-                        videosCommented++;
-                        Monitor.updateCounter(videosCommented, counter3, "comment", monitor.lCounterURL, monitor.lRateURL);
-                    }
+                        if (!tfThreads.getText().isEmpty()) {
+                            threads = Integer.parseInt(tfThreads.getText());
+                        }
 
-                    commented = 0;
-                    comment = 1;
+                        //change process status
+                        started = 1;
 
-                    if(useLike && accounts.size() > 0) {
-                        delay = Integer.parseInt(tfDelayAccount.getText());
+                        for (String key : urls.keySet()) {
+                            if (abort == 1) {
+                                JOptionPane.showMessageDialog(null, "Process is successfully aborted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                break;
+                            }
 
-                        if(useProxy && proxies.size() > 0) {
-                            int brojac = 0;
-                            int indexP = 0;
-                            int a = accounts.size();
-                            int p = proxies.size();
+                            //initialize parameters
+                            String url = key;
+                            String komentar = urls.get(key);
 
-                            for (String accKey : accounts.keySet()) {
-                                if(abort == 1) {
-                                    optionPane.showMessageDialog(null, "Process is successfully aborted", "Success", JOptionPane.INFORMATION_MESSAGE);
-                                    break;
-                                }
-
-                                boolean firstRunLike = true;
-                                liked = 0;
-
-                                //initialize parameters
-                                String username = accKey;
-                                String password = accounts.get(accKey);
-
-                                //syncing proxies with accounts
-                                brojac++;
-
-                                if (brojac >= a / p) {
-                                    counter = 0;
-                                    indexP++;
-                                }
-
-                                if (indexP == p) {
-                                    indexP = 0;
-                                }
-
-                                //check if user liked video
-                                while ((session == 1 || firstRunLike) && liked == 0) {
-                                    if(abort == 1) {
-                                        optionPane.showMessageDialog(null, "Process is successfully aborted", "Success", JOptionPane.INFORMATION_MESSAGE);
-                                        break;
-                                    }
-
-                                    firstRunLike = false;
-                                    //execute like action
-                                    try {
-                                        Like.like(proxies.get(indexP), port, url, komentar, username, password);
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
-                                    }
-
-                                    commentsLiked++;
-                                    Monitor.updateCounter(commentsLiked, videosCommented, "like", monitor.lCounterAccount, monitor.lRateAccount);
-                                }
-
-                                //pause process by provided time
+                            //execute comment action
+                            if (abort == 1) {
+                                JOptionPane.showMessageDialog(null, "Process is successfully aborted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                break;
+                            } else {
                                 try {
-                                    Thread.sleep(delay);
-                                } catch (InterruptedException e1) {
+                                    Comment.comment(url, komentar, korisnickoIme, lozinka);
+                                } catch (Exception e1) {
                                     e1.printStackTrace();
                                 }
                             }
 
-                            optionPane.showMessageDialog(null, "Process is successfully completed", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            started = 0;
-                        } else {
-                            Error.showError("Load required files");
-                            started = 0;
+                            //execute like action
+                            if(accounts.size() > 0) {
+                            if(useLike && cLike.isEnabled()) {
+                                if(useProxy && cProxy.isEnabled()) {
+                                    proxies.add("0");
+                                }
+
+                                int brojac = 0;
+                                int indexP = 0;
+                                int a = accounts.size();
+                                int p = proxies.size();
+
+                                for (String accKey : accounts.keySet()) {
+                                    if (abort == 1) {
+                                        JOptionPane.showMessageDialog(null, "Process is successfully aborted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                        break;
+                                    }
+
+                                    boolean firstRunLike = true;
+                                    liked = 0;
+
+                                    //initialize parameters
+                                    String username = accKey;
+                                    String password = accounts.get(accKey);
+
+                                    //binding proxies with accounts
+                                    if(useProxy && cProxy.isEnabled()) {
+                                        brojac++;
+
+                                        if (brojac >= a / p) {
+                                            counter = 0;
+                                            indexP++;
+                                        }
+
+                                        if (indexP == p) {
+                                            indexP = 0;
+                                        }
+
+                                    }else {
+                                        indexP = 0;
+                                        port = 0;
+                                    }
+
+                                    //check if user liked video
+                                    while((session == 1 || firstRunLike) && liked == 0) {
+                                        if (abort == 1) {
+                                            JOptionPane.showMessageDialog(null, "Process is successfully aborted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                            break;
+                                        }
+
+                                        firstRunLike = false;
+                                        //execute like action
+                                        try {
+                                            Like.like(proxies.get(indexP), port, url, komentar, username, password);
+                                        } catch (Exception e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    }
+
+                                    //pause process by provided time
+                                    try {
+                                        Thread.sleep(delay);
+                                    } catch (InterruptedException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+
+                                JOptionPane.showMessageDialog(null, "Process is successfully completed", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                started = 0;
+                            }
+                            }else {
+                                Error.showError("Accounts are required");
+                                started = 0;
+                            }
                         }
+                    }else {
+                        Error.showError("URLs are required");
+                        started = 0;
                     }
-                }
                 }
             }
         });
@@ -215,6 +213,7 @@ public class Main implements DocumentListener {
                     String line;
                     counter2 = 0;
                     DefaultListModel listModel = new DefaultListModel();
+                    proxies.clear();
 
                     while((line = br.readLine()) != null) {
                         proxies.add(line);
@@ -267,7 +266,7 @@ public class Main implements DocumentListener {
             public void actionPerformed(ActionEvent e) {
                 if(started == 1) {
                     abort = 1;
-                    optionPane.showMessageDialog(null, "Process will be aborted", "Message", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Process will be aborted", "Message", JOptionPane.INFORMATION_MESSAGE);
                 }else {
                     Error.showError("Process is not running");
                 }
@@ -280,9 +279,9 @@ public class Main implements DocumentListener {
                 String s = "";
                 s += "Instructions\n";
                 s += "\n";
-                s += "1. Blah blah blah";
+                s += "1. Install Mozilla Firefox version below 47";
                 //todo write instructions
-                optionPane.showMessageDialog(null, s, "Info", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, s, "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
@@ -305,18 +304,6 @@ public class Main implements DocumentListener {
         });
 
         tfUsername.getDocument().addDocumentListener(this);
-
-        bMonitor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!monitorShown) {
-                    Monitor.newScreen();
-                    monitorShown = true;
-                }else {
-                    optionPane.showMessageDialog(null, "Monitor is already open", "Message", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        });
 
         bClearURL.addActionListener(new ActionListener() {
             @Override
@@ -652,6 +639,8 @@ public class Main implements DocumentListener {
             counter3 = 0;
             DefaultListModel listModel = new DefaultListModel();
 
+            hashMap.clear();
+
             while((line = br.readLine()) != null) {
                 hashMap.put(line.substring(0, line.indexOf("~")), line.substring(line.indexOf("~") + 1));
 
@@ -748,12 +737,12 @@ public class Main implements DocumentListener {
 
     @Override
     public void insertUpdate(DocumentEvent e) {
-
+        saveFieldsToFile();
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
-
+        saveFieldsToFile();
     }
 
     @Override

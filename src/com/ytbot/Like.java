@@ -8,37 +8,80 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import static org.junit.Assert.*;
-
 import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class Like {
-    public static WebDriver driver;
-    public static StringBuffer verificationErrors = new StringBuffer();
-    public static String globalIP;
-    public static int globalPort;
+    private static WebDriver driver;
+    private static StringBuffer verificationErrors = new StringBuffer();
+    private static String globalIP;
+    private static int globalPort;
 
+    private static int finished = 0;
+    private static int runs = 0;
+    private static final int RUN_LIMIT = 3;
 
-    private static Calendar cal = Calendar.getInstance();
+    private static String proxy = "No proxy";
+
+    private static Calendar cal;
     private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+    private static int counter = 0;
 
     public static void like(String ip, int port, String url, String comment, String username, String password) throws Exception {
         setUp(ip, port);
+
         globalIP = ip;
         globalPort = port;
-        testLike(url, comment, username, password);
+
+        counter = Monitor.likeCounter;
+
+        Monitor monitor = new Monitor();
+
+        if(!ip.equals("0") && port != 0) {
+            proxy = ip + ":" + String.valueOf(port);
+        }
+
+        cal = Calendar.getInstance();
+        monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Like", "Started", sdf.format(cal.getTime())});
+
+        while(finished == 0) {
+            runs++;
+
+            if(runs < RUN_LIMIT) {
+                testLike(url, comment, username, password);
+            }else {
+                break;
+            }
+        }
+
+        cal = Calendar.getInstance();
+
+        if(finished == 1) {
+            counter++;
+
+            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Like", "Finished", sdf.format(cal.getTime())});
+            monitor.updateCounter(counter, Main.urls.size(), "comment", monitor.lCounterURL, monitor.lRateURL);
+        }else {
+            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Like", "Error", sdf.format(cal.getTime())});
+        }
+
         tearDown();
     }
 
     @Before
     public static void setUp(String ip, int port) throws Exception {
-        driver = Proxy.setProxy(ip, port);
+        driver = new FirefoxDriver();
+
+        if(ip.equals("0") && port == 0) {
+            driver = Proxy.setProxy(ip, port);
+        }
+
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
     @Test
     public static void testLike(String url, String comment, String username, String password) throws Exception {
-        Monitor.model.addRow(new Object[]{url + "~" + comment, username + "~" + password, globalIP + ":" + globalPort, "Like", "Started", sdf.format(cal.getTime())});
-
         int isPresent;
         JavascriptExecutor jse = (JavascriptExecutor) driver;
         WebElement more;
@@ -83,27 +126,28 @@ public class Like {
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
 
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
-                Long old = (Long) jse.executeScript("return window.scrollY;");
                 pos -= 50;
                 jse.executeScript("window.scrollTo(0 , " + pos + ")");
-                Long current = (Long) jse.executeScript("return window.scrollY;");
 
-                if(current > old) {
-                    if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
-                        break;
-                    }
-                }else {
+                if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
                     break;
                 }
             }
 
             while(!textExists(comment)) {
+                Long old = (Long) jse.executeScript("return window.scrollY;");
                 pos += 50;
                 jse.executeScript("window.scrollTo(0 , " + pos + ")");
+                Long current = (Long) jse.executeScript("return window.scrollY;");
 
-                if(moreButtonSize() > 0) {
-                    more = driver.findElement(By.xpath("//*[@id=\"comment-section-renderer\"]/button"));
-                    more.click();
+                if(current > old) {
+                    if(moreButtonSize() > 0) {
+                        more = driver.findElement(By.xpath("//*[@id=\"comment-section-renderer\"]/button"));
+                        more.click();
+                        break;
+                    }
+                }else {
+                    break;
                 }
             }
 
@@ -131,26 +175,24 @@ public class Like {
                 }
             }
         }
-
-        Monitor.model.addRow(new Object[]{url + "~" + comment, username + "~" + password, globalIP + ":" + globalPort, "Like", "Finished", sdf.format(cal.getTime())});
     }
 
-    public static boolean textExists(String text){
+    private static boolean textExists(String text){
         boolean b = driver.getPageSource().contains(text);
         return b;
     }
 
-    public static int moreButtonSize(){
+    private static int moreButtonSize(){
         int s = driver.findElements(By.xpath("//*[@id=\"comment-section-renderer\"]/button")).size();
         return s;
     }
 
-    public static int getX(WebElement element) {
+    private static int getX(WebElement element) {
         int x = element.getLocation().x - 100;
         return x;
     }
 
-    public static int getY(WebElement element) {
+    private static int getY(WebElement element) {
         int y = element.getLocation().y - 100;
         return y;
     }
