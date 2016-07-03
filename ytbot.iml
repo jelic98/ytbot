@@ -7,9 +7,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="com.jgoodies:jgoodies-forms:1.9.0" level="project" />
-    <orderEntry type="library" name="selenium-java-2.53.0" level="project" />
-    <orderEntry type="library" name="selenium-server-standalone-2.53.0" level="project" />
     <orderEntry type="library" name="junit-4.10" level="project" />
+    <orderEntry type="library" name="com.jgoodies:jgoodies-forms:1.9.0" level="project" />
+    <orderEntry type="library" name="selenium-java-2.53.1" level="project" />
+    <orderEntry type="library" name="selenium-java-2.53.1-srcs" level="project" />
+    <orderEntry type="library" name="selenium-server-standalone-2.53.1" level="project" />
   </component>
 </module>

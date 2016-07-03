@@ -29,6 +29,7 @@
       <xy x="70" y="7" width="1000" height="500"/>
     </constraints>
     <properties>
+      <inheritsPopupMenu value="false"/>
       <minimumSize width="100" height="100"/>
       <preferredSize width="100" height="100"/>
     </properties>
@@ -190,16 +191,6 @@
         <rowspec value="top:3dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="top:3dlu:noGrow"/>
-        <rowspec value="center:max(d;4px):noGrow"/>
-        <rowspec value="top:3dlu:noGrow"/>
-        <rowspec value="center:max(d;4px):noGrow"/>
-        <rowspec value="top:3dlu:noGrow"/>
-        <rowspec value="center:max(d;4px):noGrow"/>
-        <rowspec value="top:3dlu:noGrow"/>
-        <rowspec value="center:max(d;4px):noGrow"/>
-        <rowspec value="top:3dlu:noGrow"/>
-        <rowspec value="center:max(d;4px):noGrow"/>
-        <rowspec value="top:3dlu:noGrow"/>
         <rowspec value="top:3dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="top:3dlu:noGrow"/>
@@ -225,7 +216,7 @@
             <colspec value="left:4dlu:noGrow"/>
             <colspec value="fill:d:grow"/>
             <constraints>
-              <grid row="16" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
               <forms defaultalign-horz="false"/>
             </constraints>
             <properties/>
@@ -257,7 +248,7 @@
           </grid>
           <grid id="1cb12" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints>
-              <grid row="18" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
               <forms/>
             </constraints>
             <properties/>
@@ -276,32 +267,14 @@
                   <text value="Start"/>
                 </properties>
               </component>
-              <component id="3032" class="javax.swing.JButton" binding="bAbort">
+              <component id="ef660" class="javax.swing.JButton" binding="bInfo">
                 <constraints/>
                 <properties>
-                  <text value="Abort"/>
+                  <text value="Info"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <component id="ef660" class="javax.swing.JButton" binding="bInfo">
-            <constraints>
-              <grid row="20" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-              <forms/>
-            </constraints>
-            <properties>
-              <text value="Info"/>
-            </properties>
-          </component>
-          <component id="1e95c" class="javax.swing.JLabel" binding="lEcloga">
-            <constraints>
-              <grid row="22" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-              <forms defaultalign-horz="false"/>
-            </constraints>
-            <properties>
-              <text value="Copyright © ecloga.org"/>
-            </properties>
-          </component>
           <component id="7ea7f" class="javax.swing.JTextField" binding="tfPassword">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -322,26 +295,6 @@
               <text value="1"/>
             </properties>
           </component>
-          <component id="4d3e4" class="javax.swing.JTextField" binding="tfDelayAccount">
-            <constraints>
-              <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-              <forms defaultalign-horz="false"/>
-            </constraints>
-            <properties>
-              <columns value="15"/>
-              <text value="0"/>
-            </properties>
-          </component>
-          <component id="d7323" class="javax.swing.JTextField" binding="tfPort">
-            <constraints>
-              <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-              <forms defaultalign-horz="false"/>
-            </constraints>
-            <properties>
-              <columns value="15"/>
-              <text value="80"/>
-            </properties>
-          </component>
           <component id="a4961" class="javax.swing.JLabel" binding="lPassword">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -360,22 +313,13 @@
               <text value="Threads"/>
             </properties>
           </component>
-          <component id="1166c" class="javax.swing.JLabel" binding="lDelayAccount">
-            <constraints>
-              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-              <forms defaultalign-horz="false"/>
-            </constraints>
-            <properties>
-              <text value="Delay (ms)"/>
-            </properties>
-          </component>
-          <component id="7d6c" class="javax.swing.JLabel" binding="lPort">
+          <component id="1e95c" class="javax.swing.JLabel" binding="lEcloga">
             <constraints>
               <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
               <forms defaultalign-horz="false"/>
             </constraints>
             <properties>
-              <text value="Port"/>
+              <text value="Copyright © Ecloga Apps"/>
             </properties>
           </component>
         </children>

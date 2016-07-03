@@ -14,8 +14,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class Like {
     private static WebDriver driver;
     private static StringBuffer verificationErrors = new StringBuffer();
-    private static String globalIP;
-    private static int globalPort;
 
     private static int finished = 0;
     private static int runs = 0;
@@ -28,19 +26,12 @@ public class Like {
 
     private static int counter = 0;
 
-    public static void like(String ip, int port, String url, String comment, String username, String password) throws Exception {
-        setUp(ip, port);
-
-        globalIP = ip;
-        globalPort = port;
+    public static void like(String proxy, String url, String comment, String username, String password) throws Exception {
+        setUp(proxy);
 
         counter = Monitor.likeCounter;
 
         Monitor monitor = new Monitor();
-
-        if(!ip.equals("0") && port != 0) {
-            proxy = ip + ":" + String.valueOf(port);
-        }
 
         cal = Calendar.getInstance();
         monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Like", "Started", sdf.format(cal.getTime())});
@@ -70,11 +61,11 @@ public class Like {
     }
 
     @Before
-    public static void setUp(String ip, int port) throws Exception {
+    public static void setUp(String proxy) throws Exception {
         driver = new FirefoxDriver();
 
-        if(ip.equals("0") && port == 0) {
-            driver = Proxy.setProxy(ip, port);
+        if(!proxy.equals("0")) {
+            driver = Proxy.setProxy(proxy);
         }
 
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
