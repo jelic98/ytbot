@@ -254,6 +254,12 @@
             <properties/>
             <border type="none"/>
             <children>
+              <component id="c098e" class="javax.swing.JButton" binding="bSave">
+                <constraints/>
+                <properties>
+                  <text value="Save"/>
+                </properties>
+              </component>
               <component id="1eef2" class="javax.swing.JButton" binding="bLoad">
                 <constraints/>
                 <properties>

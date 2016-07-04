@@ -26,6 +26,8 @@ public class Comment {
 
         if(!proxy.equals("0")) {
             driver = Proxy.setProxy(proxy);
+        }else {
+            proxy = "No proxy";
         }
 
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -40,7 +42,7 @@ public class Comment {
         Monitor monitor = new Monitor();
 
         cal = Calendar.getInstance();
-        monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Started", sdf.format(cal.getTime())});
+        monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Comment", "Started", sdf.format(cal.getTime())});
 
         while(finished == 0) {
             runs++;
@@ -57,10 +59,10 @@ public class Comment {
         if(finished == 1) {
             counter++;
 
-            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Finished", sdf.format(cal.getTime())});
+            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Comment", "Finished", sdf.format(cal.getTime())});
             monitor.updateCounter(counter, Main.urls.size(), "comment", monitor.lCounterURL, monitor.lRateURL);
         }else {
-            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, "No proxy", "Comment", "Error", sdf.format(cal.getTime())});
+            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Comment", "Error", sdf.format(cal.getTime())});
         }
 
         tearDown();

@@ -38,7 +38,7 @@
                   <forms defaultalign-horz="false"/>
                 </constraints>
                 <properties>
-                  <text value="Videos commented: 0/0"/>
+                  <text value="Videos commented: 0"/>
                 </properties>
               </component>
               <component id="e8136" class="javax.swing.JLabel" binding="lRateURL">

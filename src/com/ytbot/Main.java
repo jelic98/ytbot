@@ -14,12 +14,12 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.List;
 
-public class Main implements DocumentListener {
+public class Main {
     private JPanel panel;
     private JLabel lURL, lAccount, lProxy, lUsername, lPassword, lThreads, lEcloga;
     private JTextField tfURL, tfUsername, tfPassword, tfKomentar, tfThreads;
     private JList listURL, listAccount, listProxy;
-    private JButton bStart, bLoadAccount, bLoadProxy, bLoadURL, bLoad, bInfo, bClearURL, bAddURL, bRemoveURL, bClearAccount, bAddAccount, bRemoveAccount, bClearProxy, bAddProxy, bRemoveProxy;
+    private JButton bSave, bStart, bLoadAccount, bLoadProxy, bLoadURL, bLoad, bInfo, bClearURL, bAddURL, bRemoveURL, bClearAccount, bAddAccount, bRemoveAccount, bClearProxy, bAddProxy, bRemoveProxy;
     private JCheckBox cProxy, cLike;
     private JScrollPane scrollProxy, scrollAccount, scrollURL;
 
@@ -27,8 +27,8 @@ public class Main implements DocumentListener {
     JCheckBox[] checks = {cLike, cProxy};
 
     public static List<String> proxies = new ArrayList<String>();
-    public static Map<String, String> accounts = new HashMap<String, String>();
-    public static Map<String, String> urls = new HashMap<String, String>();
+    public static Map<String, String> accounts = new LinkedHashMap<String, String>();
+    public static Map<String, String> urls = new LinkedHashMap<String, String>();
 
     public static String dirName = System.getProperty("user.home") + "/ytbot";
 
@@ -74,6 +74,7 @@ public class Main implements DocumentListener {
                     }
 
                     if(urls.size() > 0) {
+                        //check if user wants to like comment but have not loaded accounts
                         if(!(accounts.size() > 0) && useLike && cLike.isEnabled()) {
                             Error.showError("Accounts are required");
                             started = 0;
@@ -81,6 +82,7 @@ public class Main implements DocumentListener {
                             return;
                         }
 
+                        //check if user wants to use proxies but have not loaded proxies
                         if(!(proxies.size() > 0) && useProxy && cProxy.isEnabled()) {
                             Error.showError("Proxies are required");
                             started = 0;
@@ -92,8 +94,11 @@ public class Main implements DocumentListener {
                         String korisnickoIme = tfUsername.getText();
                         String lozinka = tfPassword.getText();
 
-                        if (!tfThreads.getText().isEmpty()) {
+                        try {
                             threads = Math.abs(Integer.parseInt(tfThreads.getText()));
+                        }
+                        catch(Exception e1) {
+                            Error.showError("Number of threads must be an integer");
                         }
 
                         //start process logging
@@ -104,7 +109,16 @@ public class Main implements DocumentListener {
                         session = 0;
                         liked = 0;
 
-                        for (String key : urls.keySet()) {
+                        int i = 0;
+                        int j = 0;
+
+                        for(String key : urls.keySet()) {
+                            System.out.println(key);
+                        }
+
+                        while(i < urls.size() / threads) {
+                            String key = urls.get(i);
+                        //for(String key : urls.keySet()) {
                             //initialize parameters
                             String url = key;
                             String komentar = urls.get(key);
@@ -132,12 +146,10 @@ public class Main implements DocumentListener {
                                     indexP = 0;
                                 }
 
-                                int i = 0;
-
-                                while(i < threads) {
+                                while(j < threads) {
                                     CommentThread thread = new CommentThread(proxies.get(indexP), url, komentar, korisnickoIme, lozinka);
                                     thread.start();
-                                    i++;
+                                    j++;
                                 }
 
                             //execute like action
@@ -190,6 +202,8 @@ public class Main implements DocumentListener {
                                 JOptionPane.showMessageDialog(null, "Process is successfully completed", "Success", JOptionPane.INFORMATION_MESSAGE);
                                 started = 0;
                             }
+
+                            i++;
                         }
 
                         started = 0;
@@ -228,8 +242,6 @@ public class Main implements DocumentListener {
                 }catch (Exception e1){
                     e1.printStackTrace();
                 }
-
-                saveListToFile("proxy.txt", proxies);
             }
         });
 
@@ -237,7 +249,6 @@ public class Main implements DocumentListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 populateMap(accounts);
-                saveMapToFile("account.txt", accounts);
             }
         });
 
@@ -245,7 +256,6 @@ public class Main implements DocumentListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 populateMap(urls);
-                saveMapToFile("url.txt", urls);
             }
         });
 
@@ -276,7 +286,6 @@ public class Main implements DocumentListener {
             public void itemStateChanged(ItemEvent e) {
                 useProxy = !useProxy;
                 changeProxy(useProxy);
-                saveFieldsToFile();
             }
         });
 
@@ -285,11 +294,8 @@ public class Main implements DocumentListener {
             public void itemStateChanged(ItemEvent e) {
                 useLike = !useLike;
                 changeLike(useLike);
-                saveFieldsToFile();
             }
         });
-
-        tfUsername.getDocument().addDocumentListener(this);
 
         bClearURL.addActionListener(new ActionListener() {
             @Override
@@ -298,7 +304,6 @@ public class Main implements DocumentListener {
                 listURL.setModel(listModel);
                 lURL.setText("URL: 0");
                 urls.clear();
-                saveMapToFile("url.txt", urls);
             }
         });
 
@@ -309,7 +314,6 @@ public class Main implements DocumentListener {
                 listAccount.setModel(listModel);
                 lAccount.setText("Account: 0");
                 accounts.clear();
-                saveMapToFile("account.txt", accounts);
             }
         });
 
@@ -320,7 +324,6 @@ public class Main implements DocumentListener {
                 listProxy.setModel(listModel);
                 lProxy.setText("Proxy: 0");
                 proxies.clear();
-                saveListToFile("proxy.txt", proxies);
             }
         });
 
@@ -334,7 +337,6 @@ public class Main implements DocumentListener {
                 if (selectedIndex != -1) {
                     model.remove(selectedIndex);
                     urls.remove(line.substring(0, line.indexOf(":")));
-                    saveMapToFile("url.txt", urls);
                 }
             }
         });
@@ -349,7 +351,6 @@ public class Main implements DocumentListener {
                 if (selectedIndex != -1) {
                     model.remove(selectedIndex);
                     accounts.remove(line.substring(0, line.indexOf(":")));
-                    saveMapToFile("account.txt", accounts);
                 }
             }
         });
@@ -364,7 +365,6 @@ public class Main implements DocumentListener {
                 if(selectedIndex != -1) {
                     model.remove(selectedIndex);
                     proxies.remove(proxies.indexOf(line));
-                    saveListToFile("proxy.txt", proxies);
                 }
             }
         });
@@ -378,12 +378,12 @@ public class Main implements DocumentListener {
                     if(!name.contains(":")) {
                         Error.showError("Format: URL:COMMENT");
                     }else {
+                        name = name.replace("https://www.youtube.com/watch?v=", "");
+
                         DefaultListModel model = (DefaultListModel) listURL.getModel();
                         model.addElement(name);
 
                         urls.put(name.substring(0, name.indexOf(":")), name.substring(name.indexOf(":") + 1));
-
-                        saveMapToFile("url.txt", urls);
                     }
                 }
             }
@@ -402,8 +402,6 @@ public class Main implements DocumentListener {
                         model.addElement(name);
 
                         accounts.put(name.substring(0, name.indexOf(":")), name.substring(name.indexOf(":") + 1));
-
-                        saveMapToFile("account.txt", accounts);
                     }
                 }
             }
@@ -422,10 +420,18 @@ public class Main implements DocumentListener {
                         model.addElement(name);
 
                         proxies.add(name);
-
-                        saveListToFile("proxy.txt", proxies);
                     }
                 }
+            }
+        });
+
+        bSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveFieldsToFile();
+                saveListToFile("proxy.txt", proxies);
+                saveMapToFile("url.txt", urls);
+                saveMapToFile("account.txt", accounts);
             }
         });
     }
@@ -441,6 +447,10 @@ public class Main implements DocumentListener {
             DefaultListModel listModel = new DefaultListModel();
 
             while((line = br.readLine()) != null) {
+                if(hashMap == urls) {
+                    line = line.replace("https://www.youtube.com/watch?v=", "");
+                }
+
                 hashMap.put(line.substring(0, line.indexOf(":")), line.substring(line.indexOf(":") + 1));
 
                 if(hashMap == accounts) {
@@ -565,7 +575,7 @@ public class Main implements DocumentListener {
 
     private void saveFieldsToFile() {
         try {
-            PrintWriter w = new PrintWriter(dirName + "/fields.txt", "UTF-8");
+            PrintWriter w = new PrintWriter(dirName + "/field.txt", "UTF-8");
 
             for(JTextField field : fields) {
                 w.println(field.getText());
@@ -585,7 +595,7 @@ public class Main implements DocumentListener {
 
     private void loadFields() {
         try{
-            FileInputStream fs = new FileInputStream(dirName + "/fields.txt");
+            FileInputStream fs = new FileInputStream(dirName + "/field.txt");
             DataInputStream in = new DataInputStream(fs);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String line;
@@ -594,7 +604,7 @@ public class Main implements DocumentListener {
             while((line = br.readLine()) != null) {
                 i++;
 
-                if(i <= 5) {
+                if(i <= 3) {
                     fields[i - 1].setText(line);
                 }else {
                     checks[i - 4].setSelected(Boolean.valueOf(line));
@@ -711,20 +721,5 @@ public class Main implements DocumentListener {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        saveFieldsToFile();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        saveFieldsToFile();
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        saveFieldsToFile();
     }
 }
