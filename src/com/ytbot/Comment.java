@@ -21,21 +21,20 @@ public class Comment {
     private static int counter = 0;
 
     @Before
-    public static void setUp(String proxy) throws Exception {
+    public static void setUp() throws Exception {
         driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+    }
+
+
+    public static void comment(String proxy, String url, String comment, String username, String password) throws Exception {
+        setUp();
 
         if(!proxy.equals("0")) {
             driver = Proxy.setProxy(proxy);
         }else {
             proxy = "No proxy";
         }
-
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-    }
-
-
-    public static void comment(String proxy, String url, String comment, String username, String password) throws Exception {
-        setUp(proxy);
 
         counter = Monitor.commentCounter;
 

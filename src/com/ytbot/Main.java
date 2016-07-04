@@ -22,6 +22,7 @@ public class Main {
     private JButton bSave, bStart, bLoadAccount, bLoadProxy, bLoadURL, bLoad, bInfo, bClearURL, bAddURL, bRemoveURL, bClearAccount, bAddAccount, bRemoveAccount, bClearProxy, bAddProxy, bRemoveProxy;
     private JCheckBox cProxy, cLike;
     private JScrollPane scrollProxy, scrollAccount, scrollURL;
+    private JButton bAbort;
 
     JTextField[] fields = {tfUsername, tfPassword, tfThreads};
     JCheckBox[] checks = {cLike, cProxy};
@@ -68,9 +69,9 @@ public class Main {
                     Error.showError("Username and password are required");
                     started = 0;
                 }else {
-                    //if first element if 0 then do not use proxy
+                    //if first element is 0 then do not use proxy
                     if(useProxy && cProxy.isEnabled()) {
-                        proxies.add("0");
+                        proxies.add(0, "0");
                     }
 
                     if(urls.size() > 0) {
@@ -110,50 +111,54 @@ public class Main {
                         liked = 0;
 
                         int i = 0;
-                        int j = 0;
+                        int rest = 0;
 
-                        for(String key : urls.keySet()) {
-                            System.out.println(key);
+                        if(urls.size() % threads != 0) {
+                            rest = 1;
                         }
 
-                        while(i < urls.size() / threads) {
-                            String key = urls.get(i);
-                        //for(String key : urls.keySet()) {
-                            //initialize parameters
-                            String url = key;
-                            String komentar = urls.get(key);
-
+                        while(i < urls.size() / threads + rest) {
                             //execute comment action
-                                int brojac = 0;
-                                int indexP = 0;
-                                int a = accounts.size();
-                                int p = proxies.size();
+                            int j = 0;
 
-                                //binding proxies with accounts
-                                if(useProxy && cProxy.isEnabled()) {
-                                    brojac++;
+                                while(j < threads) {
+                                    //get distinct position
+                                    int pos = i * (i + 1) + j;
 
-                                    if (brojac >= a / p) {
-                                        counter = 0;
-                                        indexP++;
-                                    }
+                                    //initialize parameters
+                                    String url = (new ArrayList<String>(urls.keySet())).get(i);
+                                    String komentar = urls.get(url);
 
-                                    if (indexP == p) {
+                                    int brojac = 0;
+                                    int indexP = 0;
+                                    int a = accounts.size();
+                                    int p = proxies.size();
+
+                                    //binding proxies with accounts
+                                    if(useProxy && cProxy.isEnabled()) {
+                                        brojac++;
+
+                                        if (brojac >= a / p) {
+                                            counter = 0;
+                                            indexP++;
+                                        }
+
+                                        if (indexP == p) {
+                                            indexP = 0;
+                                        }
+
+                                    }else {
                                         indexP = 0;
                                     }
 
-                                }else {
-                                    indexP = 0;
-                                }
-
-                                while(j < threads) {
-                                    CommentThread thread = new CommentThread(proxies.get(indexP), url, komentar, korisnickoIme, lozinka);
+                                    Thread thread = new Thread(new CommentThread(proxies.get(indexP), "https://www.youtube.com/watch?v=" + url, komentar, korisnickoIme, lozinka));
                                     thread.start();
+
                                     j++;
                                 }
 
                             //execute like action
-                            if(useLike && cLike.isEnabled()) {
+                            /*if(useLike && cLike.isEnabled()) {
                                 brojac = 0;
                                 indexP = 0;
                                 a = accounts.size();
@@ -201,7 +206,7 @@ public class Main {
 
                                 JOptionPane.showMessageDialog(null, "Process is successfully completed", "Success", JOptionPane.INFORMATION_MESSAGE);
                                 started = 0;
-                            }
+                            }*/
 
                             i++;
                         }
@@ -432,6 +437,16 @@ public class Main {
                 saveListToFile("proxy.txt", proxies);
                 saveMapToFile("url.txt", urls);
                 saveMapToFile("account.txt", accounts);
+            }
+        });
+
+        bAbort.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //todo get active threads
+                //todo abort active threads
+                //todo get upcomming threads
+                //todo abort upcomming threads
             }
         });
     }

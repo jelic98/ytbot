@@ -19,15 +19,19 @@ public class Like {
     private static int runs = 0;
     private static final int RUN_LIMIT = 3;
 
-    private static String proxy = "No proxy";
-
     private static Calendar cal;
     private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
     private static int counter = 0;
 
     public static void like(String proxy, String url, String comment, String username, String password) throws Exception {
-        setUp(proxy);
+        setUp();
+
+        if(!proxy.equals("0")) {
+            driver = Proxy.setProxy(proxy);
+        }else {
+            proxy = "No proxy";
+        }
 
         counter = Monitor.likeCounter;
 
@@ -61,14 +65,9 @@ public class Like {
     }
 
     @Before
-    public static void setUp(String proxy) throws Exception {
+    public static void setUp() throws Exception {
         driver = new FirefoxDriver();
-
-        if(!proxy.equals("0")) {
-            driver = Proxy.setProxy(proxy);
-        }
-
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
     }
 
     @Test

@@ -191,6 +191,10 @@
         <rowspec value="top:3dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
         <rowspec value="top:3dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="top:3dlu:noGrow"/>
@@ -254,29 +258,16 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="c098e" class="javax.swing.JButton" binding="bSave">
-                <constraints/>
-                <properties>
-                  <text value="Save"/>
-                </properties>
-              </component>
               <component id="1eef2" class="javax.swing.JButton" binding="bLoad">
                 <constraints/>
                 <properties>
                   <text value="Load"/>
                 </properties>
               </component>
-              <component id="846ba" class="javax.swing.JButton" binding="bStart">
+              <component id="c098e" class="javax.swing.JButton" binding="bSave">
                 <constraints/>
                 <properties>
-                  <background color="-12828863"/>
-                  <text value="Start"/>
-                </properties>
-              </component>
-              <component id="ef660" class="javax.swing.JButton" binding="bInfo">
-                <constraints/>
-                <properties>
-                  <text value="Info"/>
+                  <text value="Save"/>
                 </properties>
               </component>
             </children>
@@ -321,13 +312,52 @@
           </component>
           <component id="1e95c" class="javax.swing.JLabel" binding="lEcloga">
             <constraints>
-              <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="16" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
               <forms defaultalign-horz="false"/>
             </constraints>
             <properties>
               <text value="Copyright © Ecloga Apps"/>
             </properties>
           </component>
+          <grid id="a2871" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="846ba" class="javax.swing.JButton" binding="bStart">
+                <constraints/>
+                <properties>
+                  <background color="-12828863"/>
+                  <text value="Start"/>
+                </properties>
+              </component>
+              <component id="f438b" class="javax.swing.JButton" binding="bAbort">
+                <constraints/>
+                <properties>
+                  <text value="Abort"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="eb128" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="ef660" class="javax.swing.JButton" binding="bInfo">
+                <constraints/>
+                <properties>
+                  <text value="Info"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
         </children>
       </grid>
       <scrollpane id="5e06e" binding="scrollProxy">
