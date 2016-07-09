@@ -26,6 +26,8 @@ public class Like {
 
     private static Monitor monitor;
 
+    public boolean isRunning;
+
     public void like(String proxy, String url, String comment, String username, String password) throws Exception {
         setUp();
 
@@ -118,6 +120,12 @@ public class Like {
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
 
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+                if(!isRunning) {
+                    finished = 0;
+                    runs = RUN_LIMIT;
+                    break;
+                }
+
                 pos -= 50;
                 jse.executeScript("window.scrollTo(0 , " + pos + ")");
 
@@ -127,6 +135,12 @@ public class Like {
             }
 
             while(!textExists(comment)) {
+                if(!isRunning) {
+                    finished = 0;
+                    runs = RUN_LIMIT;
+                    break;
+                }
+
                 Long old = (Long) jse.executeScript("return window.scrollY;");
                 pos += 50;
                 jse.executeScript("window.scrollTo(0 , " + pos + ")");
@@ -152,6 +166,12 @@ public class Like {
                 List<WebElement> childs = likeParent.findElements(By.xpath(".//*"));
 
                 for(WebElement element : childs) {
+                    if(!isRunning) {
+                        finished = 0;
+                        runs = RUN_LIMIT;
+                        break;
+                    }
+
                     jse.executeScript("window.scrollTo(" + getX(element) + ", " + getY(element) + ")");
 
                     if(element.getAttribute("data-action-type") != null

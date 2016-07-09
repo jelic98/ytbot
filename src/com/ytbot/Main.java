@@ -219,6 +219,7 @@ public class Main {
                                         while(i < threads) {
                                             LikeThread thread = new LikeThread(proxies.get(indexP), url, komentar, username, password);
                                             thread.start();
+                                            runningLikeThreads.add(thread);
                                             i++;
                                         }
                                     }
@@ -479,6 +480,10 @@ public class Main {
                 started = 0;
 
                 for(CommentThread thread : runningCommentThreads) {
+                    thread.kill();
+                }
+
+                for(LikeThread thread : runningLikeThreads) {
                     thread.kill();
                 }
             }
