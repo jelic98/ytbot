@@ -6,20 +6,23 @@ import java.awt.*;
 
 public class Monitor {
     public JPanel panel;
-    public JLabel lCounterURL;
-    public JLabel lCounterAccount;
-    public JLabel lRateURL;
-    public JLabel lRateAccount;
+    private static JLabel lCounterURL, lCounterAccount;
     private static JTable table;
     private static DefaultTableModel model;
     private static JFrame frame = new JFrame();
-    public static int commentCounter = 0;
-    public static int likeCounter = 0;
+    private static int commentCounter;
+    private static int likeCounter;
+    private static int commentTotal;
+    private static int likeTotal;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static int width = (int) (screenSize.getWidth() * 0.5);
     private static int height = (int) (screenSize.getHeight() * 0.75);
+    private static JScrollPane scrollPane;
 
     public Monitor() {
+        lCounterURL = new JLabel();
+        lCounterAccount = new JLabel();
+
         model = new DefaultTableModel();
 
         table = new JTable(model) {
@@ -38,48 +41,58 @@ public class Monitor {
         table.setFillsViewportHeight(true);
         table.getTableHeader().setReorderingAllowed(false);
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        panel.add(scrollPane);
+        scrollPane = new JScrollPane(table);
     }
 
-    public static void updateCounter(int x, int y, String flag, JLabel label1, JLabel label2) {
-        String s1 = "";
-        String s2 = "";
+    public int getCommentCounter() {
+       return commentCounter;
+    }
 
-        float z = 100 * x / y;
+    public int getLikeCounter() {
+        return likeCounter;
+    }
+
+    public void updateCounter(int x, int y, String flag) {
+        String s1 = "";
 
         if(flag.equals("comment")) {
             commentCounter = x;
-
-            s1 = "Videos commented: ";
-            s2 = "Comment success rate: ";
+            likeTotal = commentCounter;
+            s1 = "Comments: ";
         }else if(flag.equals("like")) {
             likeCounter = x;
-
-            s1 = "Comments liked: ";
-            s2 = "Comments liked: ";
+            s1 = "Likes: ";
         }
 
         s1 += String.valueOf(x);
         s1 += "/";
         s1 += String.valueOf(y);
 
-        s2 += String.valueOf(Math.round(z));
-        s2 += "%";
 
-        label1.setText(s1);
-        label2.setText(s2);
+        if(flag.equals("comment")) {
+            lCounterURL.setText(s1);
+        }else if(flag.equals("like")) {
+            lCounterAccount.setText(s1);
+        }
     }
 
-    public void main(String[] args) {
-        newScreen();
-    }
+    public void newScreen(boolean useLike, boolean cLikeEnabled) {
+        commentTotal = Main.counterURL;
+        lCounterURL.setText("Comments: 0/" + commentTotal);
+        lCounterAccount.setText("Likes: 0/" + commentCounter);
 
-    public void newScreen() {
+        panel.add(lCounterURL);
+
+        if(useLike && cLikeEnabled) {
+            panel.add(lCounterAccount);
+        }
+
+        panel.add(scrollPane);
+
         frame.setTitle("YTBot Monitor");
         frame.setSize(new Dimension(width, height));
         frame.setLocation(screenSize.width / 2 - width / 2,screenSize.height / 2 - height / 2);
-        frame.setContentPane(new Monitor().panel);
+        frame.setContentPane(panel);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);

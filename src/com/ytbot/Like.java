@@ -24,7 +24,9 @@ public class Like {
 
     private static int counter = 0;
 
-    public static void like(String proxy, String url, String comment, String username, String password) throws Exception {
+    private static Monitor monitor;
+
+    public void like(String proxy, String url, String comment, String username, String password) throws Exception {
         setUp();
 
         if(!proxy.equals("0")) {
@@ -33,12 +35,12 @@ public class Like {
             proxy = "No proxy";
         }
 
-        counter = Monitor.likeCounter;
+        monitor = Main.monitor;
 
-        Monitor monitor = new Monitor();
+        counter = monitor.getLikeCounter();
 
         cal = Calendar.getInstance();
-        monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Like", "Started", sdf.format(cal.getTime())});
+        monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Like", "Started", sdf.format(cal.getTime())});
 
         while(finished == 0) {
             runs++;
@@ -55,23 +57,23 @@ public class Like {
         if(finished == 1) {
             counter++;
 
-            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Like", "Finished", sdf.format(cal.getTime())});
-            monitor.updateCounter(counter, Main.urls.size(), "comment", monitor.lCounterURL, monitor.lRateURL);
+            monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Like", "Finished", sdf.format(cal.getTime())});
+            monitor.updateCounter(counter, Main.urls.size(), "like");
         }else {
-            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Like", "Error", sdf.format(cal.getTime())});
+            monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Like", "Error", sdf.format(cal.getTime())});
         }
 
         tearDown();
     }
 
     @Before
-    public static void setUp() throws Exception {
+    public void setUp() throws Exception {
         driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
     }
 
     @Test
-    public static void testLike(String url, String comment, String username, String password) throws Exception {
+    public void testLike(String url, String comment, String username, String password) throws Exception {
         int isPresent;
         JavascriptExecutor jse = (JavascriptExecutor) driver;
         WebElement more;
@@ -110,7 +112,7 @@ public class Like {
 
         int pos = driver.manage().window().getSize().height;
 
-        Thread.sleep(2500);
+        Thread.sleep(1000);
 
         if(driver.toString() != null) {
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
@@ -188,7 +190,7 @@ public class Like {
     }
 
     @After
-    public static void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         driver.quit();
         String verificationErrorString = verificationErrors.toString();
         if (!"".equals(verificationErrorString)) {

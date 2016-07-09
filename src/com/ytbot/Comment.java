@@ -5,29 +5,36 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import static org.junit.Assert.*;
+
+import org.junit.internal.runners.rules.RuleMemberValidator;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
 public class Comment {
-    private static WebDriver driver;
-    private static StringBuffer verificationErrors = new StringBuffer();
+    private WebDriver driver;
+    private StringBuffer verificationErrors = new StringBuffer();
 
-    private static Calendar cal;
-    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private Calendar cal;
+    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-    private static int finished = 0;
-    private static int runs = 0;
-    private static final int RUN_LIMIT = 3;
+    private int finished = 0;
+    private int runs = 0;
+    private final int RUN_LIMIT = 3;
 
-    private static int counter = 0;
+    private int counter = 0;
+
+    private static Monitor monitor;
+
+    public boolean isRunning;
 
     @Before
-    public static void setUp() throws Exception {
+    public void setUp() throws Exception {
         driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
     }
 
 
-    public static void comment(String proxy, String url, String comment, String username, String password) throws Exception {
+    public void comment(String proxy, String url, String comment, String username, String password) throws Exception {
         setUp();
 
         if(!proxy.equals("0")) {
@@ -36,12 +43,10 @@ public class Comment {
             proxy = "No proxy";
         }
 
-        counter = Monitor.commentCounter;
-
-        Monitor monitor = new Monitor();
+        monitor = Main.monitor;
 
         cal = Calendar.getInstance();
-        monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Comment", "Started", sdf.format(cal.getTime())});
+        monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Comment", "Started", sdf.format(cal.getTime())});
 
         while(finished == 0) {
             runs++;
@@ -55,30 +60,36 @@ public class Comment {
 
         cal = Calendar.getInstance();
 
+        counter = monitor.getCommentCounter();
+
         if(finished == 1) {
             counter++;
 
-            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Comment", "Finished", sdf.format(cal.getTime())});
-            monitor.updateCounter(counter, Main.urls.size(), "comment", monitor.lCounterURL, monitor.lRateURL);
+            monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Comment", "Finished", sdf.format(cal.getTime())});
         }else {
-            monitor.addRow(new Object[]{url + "~" + comment, username + "~" + password, proxy, "Comment", "Error", sdf.format(cal.getTime())});
+            monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Comment", "Error", sdf.format(cal.getTime())});
         }
+
+        monitor.updateCounter(counter, Main.urls.size(), "comment");
 
         tearDown();
     }
 
     @Test
-    public static void testComment(String url, String comment, String username, String password) throws Exception {
+    public void testComment(String url, String comment, String username, String password) throws Exception {
         driver.manage().window().maximize();
         driver.get(url);
 
         int isPresent = driver.findElements(By.className("signin-container ")).size();
 
         if(isPresent > 0) {
+            zoomOut(3);
+
             driver.findElement(By.className("signin-container ")).click();
             driver.findElement(By.id("Email")).clear();
             driver.findElement(By.id("Email")).sendKeys(username);
             driver.findElement(By.id("next")).click();
+            Thread.sleep(1000);
             driver.findElement(By.id("Passwd")).clear();
             driver.findElement(By.id("Passwd")).sendKeys(password);
             driver.findElement(By.id("PersistentCookie")).click();
@@ -88,12 +99,22 @@ public class Comment {
         JavascriptExecutor jse = (JavascriptExecutor)driver;
         int pos = driver.manage().window().getSize().height;
 
-        Thread.sleep(2500);
+        Thread.sleep(1000);
 
         if(driver.toString() != null) {
-            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height  / 2 + ")");
+            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
+
+            Thread.sleep(2500);
+
+            zoomOut(3);
 
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+                if(!isRunning) {
+                    finished = 0;
+                    runs = RUN_LIMIT;
+                    break;
+                }
+
                 Long old = (Long) jse.executeScript("return window.scrollY;");
                 pos -= 50;
                 jse.executeScript("window.scrollTo(0 , " + pos + ")");
@@ -101,8 +122,7 @@ public class Comment {
 
                 if(current > old) {
                     if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
-                        WebElement commentBox = driver.findElement(By.className("comment-simplebox-renderer-collapsed-content"));
-                        commentBox.click();
+                        driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).click();
                         driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
                         driver.findElement(By.className("comment-simplebox-submit")).click();
                         finished = 1;
@@ -115,11 +135,17 @@ public class Comment {
         }
     }
 
+    public void zoomOut(int level) {
+        for(int i = 0; i < level; i++) {
+            driver.findElement(By.tagName("html")).sendKeys(Keys.chord(Keys.CONTROL, Keys.SUBTRACT));
+        }
+    }
+
     @After
-    public static void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         driver.quit();
         String verificationErrorString = verificationErrors.toString();
-        if (!"".equals(verificationErrorString)) {
+        if(!"".equals(verificationErrorString)) {
             fail(verificationErrorString);
         }
     }

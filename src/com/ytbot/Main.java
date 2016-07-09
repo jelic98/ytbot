@@ -23,6 +23,10 @@ public class Main {
     private JCheckBox cProxy, cLike;
     private JScrollPane scrollProxy, scrollAccount, scrollURL;
     private JButton bAbort;
+    private int abort = 0;
+
+    ArrayList<CommentThread> runningCommentThreads = new ArrayList<CommentThread>();
+    ArrayList<LikeThread> runningLikeThreads = new ArrayList<LikeThread>();
 
     JTextField[] fields = {tfUsername, tfPassword, tfThreads};
     JCheckBox[] checks = {cLike, cProxy};
@@ -35,12 +39,9 @@ public class Main {
 
     DefaultListModel listModel = new DefaultListModel();
 
-    //account
-    private static int counter = 0;
-    //proxy
-    private static int counter2 = 0;
-    //url
-    private static int counter3 = 0;
+    public static int counter = 0;
+    public static int counterProxy = 0;
+    public static int counterURL = 0;
 
     private static int threads = 1;
 
@@ -51,8 +52,10 @@ public class Main {
     private static boolean useProxy = true;
     private static boolean useLike = true;
 
+    public static Monitor monitor;
+
     public Main() {
-        Monitor monitor = new Monitor();
+        monitor = new Monitor();
 
         createFolder();
 
@@ -103,10 +106,11 @@ public class Main {
                         }
 
                         //start process logging
-                        monitor.newScreen();
+                        monitor.newScreen(useLike, cLike.isEnabled());
 
                         //change process status
                         started = 1;
+                        abort = 0;
                         session = 0;
                         liked = 0;
 
@@ -117,11 +121,21 @@ public class Main {
                             rest = 1;
                         }
 
-                        while(i < urls.size() / threads + rest) {
-                            //execute comment action
+                        while(i < urls.size() / threads) {
+                            if(abort == 1) {
+                                started = 0;
+                                break;
+                            }
+
                             int j = 0;
 
+                            //execute comment action
                                 while(j < threads) {
+                                    if(abort == 1) {
+                                        started = 0;
+                                        break;
+                                    }
+
                                     //get distinct position
                                     int pos = i * (i + 1) + j;
 
@@ -151,14 +165,20 @@ public class Main {
                                         indexP = 0;
                                     }
 
-                                    Thread thread = new Thread(new CommentThread(proxies.get(indexP), "https://www.youtube.com/watch?v=" + url, komentar, korisnickoIme, lozinka));
+                                    CommentThread thread = new CommentThread(proxies.get(indexP), "https://www.youtube.com/watch?v=" + url, komentar, korisnickoIme, lozinka);
                                     thread.start();
+                                    runningCommentThreads.add(thread);
 
                                     j++;
                                 }
 
                             //execute like action
                             /*if(useLike && cLike.isEnabled()) {
+                                if(abort == 1) {
+                                    started = 0;
+                                    break;
+                                }
+
                                 brojac = 0;
                                 indexP = 0;
                                 a = accounts.size();
@@ -228,7 +248,7 @@ public class Main {
                     DataInputStream in = new DataInputStream(fstream);
                     BufferedReader br = new BufferedReader(new InputStreamReader(in));
                     String line;
-                    counter2 = 0;
+                    counterProxy = 0;
                     DefaultListModel listModel = new DefaultListModel();
                     proxies.clear();
 
@@ -237,8 +257,8 @@ public class Main {
 
                         listModel.addElement(line);
 
-                        counter2++;
-                        updateLabel(counter2, lProxy);
+                        counterProxy++;
+                        updateLabel(counterProxy, lProxy);
                     }
 
                     listProxy.setModel(listModel);
@@ -309,6 +329,7 @@ public class Main {
                 listURL.setModel(listModel);
                 lURL.setText("URL: 0");
                 urls.clear();
+                counterURL = 0;
             }
         });
 
@@ -319,6 +340,7 @@ public class Main {
                 listAccount.setModel(listModel);
                 lAccount.setText("Account: 0");
                 accounts.clear();
+                counter = 0;
             }
         });
 
@@ -329,6 +351,7 @@ public class Main {
                 listProxy.setModel(listModel);
                 lProxy.setText("Proxy: 0");
                 proxies.clear();
+                counterProxy = 0;
             }
         });
 
@@ -342,6 +365,7 @@ public class Main {
                 if (selectedIndex != -1) {
                     model.remove(selectedIndex);
                     urls.remove(line.substring(0, line.indexOf(":")));
+                    counterURL--;
                 }
             }
         });
@@ -356,6 +380,7 @@ public class Main {
                 if (selectedIndex != -1) {
                     model.remove(selectedIndex);
                     accounts.remove(line.substring(0, line.indexOf(":")));
+                    counter--;
                 }
             }
         });
@@ -370,6 +395,7 @@ public class Main {
                 if(selectedIndex != -1) {
                     model.remove(selectedIndex);
                     proxies.remove(proxies.indexOf(line));
+                    counterProxy--;
                 }
             }
         });
@@ -389,6 +415,8 @@ public class Main {
                         model.addElement(name);
 
                         urls.put(name.substring(0, name.indexOf(":")), name.substring(name.indexOf(":") + 1));
+
+                        counterURL++;
                     }
                 }
             }
@@ -407,6 +435,8 @@ public class Main {
                         model.addElement(name);
 
                         accounts.put(name.substring(0, name.indexOf(":")), name.substring(name.indexOf(":") + 1));
+
+                        counter++;
                     }
                 }
             }
@@ -425,6 +455,8 @@ public class Main {
                         model.addElement(name);
 
                         proxies.add(name);
+
+                        counterProxy++;
                     }
                 }
             }
@@ -443,10 +475,12 @@ public class Main {
         bAbort.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo get active threads
-                //todo abort active threads
-                //todo get upcomming threads
-                //todo abort upcomming threads
+                abort = 1;
+                started = 0;
+
+                for(CommentThread thread : runningCommentThreads) {
+                    thread.kill();
+                }
             }
         });
     }
@@ -457,8 +491,14 @@ public class Main {
             DataInputStream in = new DataInputStream(fs);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String line;
-            counter = 0;
-            counter3 = 0;
+
+            if(hashMap == accounts) {
+                counter = 0;
+            }else if(hashMap == urls) {
+                counterURL = 0;
+            }
+
+            hashMap.clear();
             DefaultListModel listModel = new DefaultListModel();
 
             while((line = br.readLine()) != null) {
@@ -472,8 +512,8 @@ public class Main {
                     counter++;
                     updateLabel(counter, lAccount);
                 }else if(hashMap == urls) {
-                    counter3++;
-                    updateLabel(counter3, lURL);
+                    counterURL++;
+                    updateLabel(counterURL, lURL);
                 }
 
                 listModel.addElement(line);
@@ -499,7 +539,8 @@ public class Main {
             DataInputStream in = new DataInputStream(fs);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String line;
-            counter2 = 0;
+            counterProxy = 0;
+            proxies.clear();
             DefaultListModel listModel = new DefaultListModel();
 
             while((line = br.readLine()) != null) {
@@ -507,8 +548,8 @@ public class Main {
 
                 listModel.addElement(line);
 
-                counter2++;
-                updateLabel(counter2, lProxy);
+                counterProxy++;
+                updateLabel(counterProxy, lProxy);
             }
 
             listProxy.setModel(listModel);
@@ -639,7 +680,7 @@ public class Main {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String line;
             counter = 0;
-            counter3 = 0;
+            counterURL = 0;
             DefaultListModel listModel = new DefaultListModel();
 
             hashMap.clear();
@@ -651,8 +692,8 @@ public class Main {
                     counter++;
                     updateLabel(counter, lAccount);
                 }else if(hashMap == urls) {
-                    counter3++;
-                    updateLabel(counter3, lURL);
+                    counterURL++;
+                    updateLabel(counterURL, lURL);
                 }
 
                 listModel.addElement(line);

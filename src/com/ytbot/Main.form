@@ -30,8 +30,9 @@
     </constraints>
     <properties>
       <inheritsPopupMenu value="false"/>
-      <minimumSize width="100" height="100"/>
-      <preferredSize width="100" height="100"/>
+      <maximumSize width="32767" height="32767"/>
+      <minimumSize width="14" height="14"/>
+      <preferredSize width="14" height="14"/>
     </properties>
     <border type="none"/>
     <children>
