@@ -1,8 +1,6 @@
 package com.ytbot;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -25,8 +23,8 @@ public class Main {
     private JButton bAbort;
     private int abort = 0;
 
-    ArrayList<CommentThread> runningCommentThreads = new ArrayList<CommentThread>();
-    ArrayList<LikeThread> runningLikeThreads = new ArrayList<LikeThread>();
+    public static ArrayList<CommentThread> runningCommentThreads = new ArrayList<CommentThread>();
+    public static ArrayList<LikeThread> runningLikeThreads = new ArrayList<LikeThread>();
 
     JTextField[] fields = {tfUsername, tfPassword, tfThreads};
     JCheckBox[] checks = {cLike, cProxy};
@@ -43,7 +41,7 @@ public class Main {
     public static int counterProxy = 0;
     public static int counterURL = 0;
 
-    private static int threads = 1;
+    public static int threads = 1;
 
     public static int session = 0;
     public static int liked = 0;
@@ -72,11 +70,6 @@ public class Main {
                     Error.showError("Username and password are required");
                     started = 0;
                 }else {
-                    //if first element is 0 then do not use proxy
-                    if(useProxy && cProxy.isEnabled()) {
-                        proxies.add(0, "0");
-                    }
-
                     if(urls.size() > 0) {
                         //check if user wants to like comment but have not loaded accounts
                         if(!(accounts.size() > 0) && useLike && cLike.isEnabled()) {
@@ -95,8 +88,8 @@ public class Main {
                         }
 
                         //get values from text fields
-                        String korisnickoIme = tfUsername.getText();
-                        String lozinka = tfPassword.getText();
+                        String mainUsername = tfUsername.getText();
+                        String mainPassword = tfPassword.getText();
 
                         try {
                             threads = Math.abs(Integer.parseInt(tfThreads.getText()));
@@ -115,119 +108,96 @@ public class Main {
                         liked = 0;
 
                         int i = 0;
+                        int plusOne = 0;
                         int rest = 0;
 
                         if(urls.size() % threads != 0) {
-                            rest = 1;
+                            plusOne = 1;
+                            rest = urls.size() % threads;
                         }
 
-                        while(i < urls.size() / threads) {
+                        int brojac = 0;
+                        int indexP = 0;
+                        int u = urls.size();
+                        int p = proxies.size();
+
+                        while(i < urls.size() / threads + plusOne) {
                             if(abort == 1) {
                                 started = 0;
                                 break;
                             }
 
                             int j = 0;
+                            int limit = 0;
+
+                            if(i == urls.size() / threads + plusOne - 1 && rest == 1) {
+                                limit = rest;
+                            }else {
+                                limit = threads;
+                            }
 
                             //execute comment action
-                                while(j < threads) {
+                                while(j < limit) {
                                     if(abort == 1) {
                                         started = 0;
                                         break;
                                     }
 
                                     //get distinct position
-                                    int pos = i * (i + 1) + j;
+                                    int pos = i * threads + j;
 
                                     //initialize parameters
-                                    String url = (new ArrayList<String>(urls.keySet())).get(i);
-                                    String komentar = urls.get(url);
+                                    String url = (new ArrayList<String>(urls.keySet())).get(pos);
+                                    String comment = urls.get(url);
 
-                                    int brojac = 0;
-                                    int indexP = 0;
-                                    int a = accounts.size();
-                                    int p = proxies.size();
+                                    String proxy;
 
-                                    //binding proxies with accounts
+                                    //binding proxies with urls
                                     if(useProxy && cProxy.isEnabled()) {
                                         brojac++;
 
-                                        if (brojac >= a / p) {
-                                            counter = 0;
+                                        if(brojac >= u / p) {
+                                            counterURL = 0;
                                             indexP++;
                                         }
 
-                                        if (indexP == p) {
+                                        if(indexP == p) {
                                             indexP = 0;
                                         }
 
+                                        proxy = proxies.get(indexP);
                                     }else {
-                                        indexP = 0;
+                                        proxy = "0";
                                     }
 
-                                    CommentThread thread = new CommentThread(proxies.get(indexP), "https://www.youtube.com/watch?v=" + url, komentar, korisnickoIme, lozinka);
-                                    thread.start();
-                                    runningCommentThreads.add(thread);
+                                    CommentThread commentThread = new CommentThread(pos, proxy, "https://www.youtube.com/watch?v=" + url, comment, mainUsername, mainPassword);
+                                    commentThread.start();
+                                    runningCommentThreads.add(commentThread);
+
+                                    int q = 0;
+
+                                    while(q < accounts.size()) {
+                                        String username = (new ArrayList<String>(accounts.keySet())).get(q);
+                                        String password = accounts.get(url);
+
+                                        boolean firstRunLike = true;
+                                        liked = 0;
+
+                                        //check if user liked video
+                                        while((session == 1 || firstRunLike) && liked == 0) {
+                                            firstRunLike = false;
+
+                                            //execute like action
+                                            LikeThread likeThread = new LikeThread(pos, q, proxy, "https://www.youtube.com/watch?v=" + url, comment, username, password);
+                                            likeThread.start();
+                                            runningLikeThreads.add(likeThread);
+                                        }
+
+                                        q++;
+                                    }
 
                                     j++;
                                 }
-
-                            //execute like action
-                            /*if(useLike && cLike.isEnabled()) {
-                                if(abort == 1) {
-                                    started = 0;
-                                    break;
-                                }
-
-                                brojac = 0;
-                                indexP = 0;
-                                a = accounts.size();
-                                p = proxies.size();
-
-                                for (String accKey : accounts.keySet()) {
-                                    boolean firstRunLike = true;
-                                    liked = 0;
-
-                                    //initialize parameters
-                                    String username = accKey;
-                                    String password = accounts.get(accKey);
-
-                                    //binding proxies with accounts
-                                    if(useProxy && cProxy.isEnabled()) {
-                                        brojac++;
-
-                                        if (brojac >= a / p) {
-                                            counter = 0;
-                                            indexP++;
-                                        }
-
-                                        if (indexP == p) {
-                                            indexP = 0;
-                                        }
-
-                                    }else {
-                                        indexP = 0;
-                                    }
-
-                                    //check if user liked video
-                                    while((session == 1 || firstRunLike) && liked == 0) {
-                                        firstRunLike = false;
-
-                                        //execute like action
-                                        i = 0;
-
-                                        while(i < threads) {
-                                            LikeThread thread = new LikeThread(proxies.get(indexP), url, komentar, username, password);
-                                            thread.start();
-                                            runningLikeThreads.add(thread);
-                                            i++;
-                                        }
-                                    }
-                                }
-
-                                JOptionPane.showMessageDialog(null, "Process is successfully completed", "Success", JOptionPane.INFORMATION_MESSAGE);
-                                started = 0;
-                            }*/
 
                             i++;
                         }
@@ -450,7 +420,8 @@ public class Main {
 
                 if(name != null && !name.isEmpty()) {
                     if(!name.contains(":")) {
-                        Error.showError("Format: IP:PORT@USERNAME:PASSWORD");
+                        Error.showError("Format: IP:PORT");
+                        //Error.showError("Format: IP:PORT@USERNAME:PASSWORD");
                     }else {
                         DefaultListModel model = (DefaultListModel) listProxy.getModel();
                         model.addElement(name);
@@ -479,15 +450,26 @@ public class Main {
                 abort = 1;
                 started = 0;
 
-                for(CommentThread thread : runningCommentThreads) {
-                    thread.kill();
-                }
-
-                for(LikeThread thread : runningLikeThreads) {
-                    thread.kill();
-                }
+                abortComments();
+                abortLikes();
             }
         });
+    }
+
+    private void abortComments() {
+        for(CommentThread thread : runningCommentThreads) {
+            thread.kill();
+        }
+
+        runningCommentThreads.clear();
+    }
+
+    private void abortLikes() {
+        for(LikeThread thread : runningLikeThreads) {
+            thread.kill();
+        }
+
+        runningLikeThreads.clear();
     }
 
     private void loadMap(Map<String, String> hashMap, String fileName) {
@@ -680,6 +662,11 @@ public class Main {
 
     private void populateMap(Map<String, String> hashMap) {
         try{
+            //check if user selected any files and exit if not
+            if(getFiles() == null) {
+                return;
+            }
+
             FileInputStream fstream = new FileInputStream(String.valueOf(Paths.get(getFiles())));
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));

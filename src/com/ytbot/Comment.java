@@ -1,36 +1,21 @@
 package com.ytbot;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
-import static org.junit.Assert.*;
-
-import org.junit.internal.runners.rules.RuleMemberValidator;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class Comment {
     private WebDriver driver;
-    private StringBuffer verificationErrors = new StringBuffer();
-
-    private Calendar cal;
-    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
-    private int finished = 0;
+    public int finished = 0;
     private int runs = 0;
     private final int RUN_LIMIT = 3;
-
-    private int counter = 0;
-
-    private static Monitor monitor;
-
-    public boolean isRunning;
+    private boolean isRunning = true;
 
     @Before
     public void setUp() throws Exception {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
 
@@ -43,11 +28,6 @@ public class Comment {
             proxy = "No proxy";
         }
 
-        monitor = Main.monitor;
-
-        cal = Calendar.getInstance();
-        monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Comment", "Started", sdf.format(cal.getTime())});
-
         while(finished == 0) {
             runs++;
 
@@ -57,20 +37,6 @@ public class Comment {
                 break;
             }
         }
-
-        cal = Calendar.getInstance();
-
-        counter = monitor.getCommentCounter();
-
-        if(finished == 1) {
-            counter++;
-
-            monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Comment", "Finished", sdf.format(cal.getTime())});
-        }else {
-            monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Comment", "Error", sdf.format(cal.getTime())});
-        }
-
-        monitor.updateCounter(counter, Main.urls.size(), "comment");
 
         tearDown();
     }
@@ -89,7 +55,7 @@ public class Comment {
             driver.findElement(By.id("Email")).clear();
             driver.findElement(By.id("Email")).sendKeys(username);
             driver.findElement(By.id("next")).click();
-            Thread.sleep(1000);
+            Thread.sleep(2500);
             driver.findElement(By.id("Passwd")).clear();
             driver.findElement(By.id("Passwd")).sendKeys(password);
             driver.findElement(By.id("PersistentCookie")).click();
@@ -135,18 +101,18 @@ public class Comment {
         }
     }
 
-    public void zoomOut(int level) {
+    private void zoomOut(int level) {
         for(int i = 0; i < level; i++) {
             driver.findElement(By.tagName("html")).sendKeys(Keys.chord(Keys.CONTROL, Keys.SUBTRACT));
         }
     }
 
+    public void kill() {
+        isRunning = false;
+    }
+
     @After
     public void tearDown() throws Exception {
         driver.quit();
-        String verificationErrorString = verificationErrors.toString();
-        if(!"".equals(verificationErrorString)) {
-            fail(verificationErrorString);
-        }
     }
 }

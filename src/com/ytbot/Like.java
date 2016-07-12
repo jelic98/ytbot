@@ -1,32 +1,19 @@
 package com.ytbot;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
-import static org.junit.Assert.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class Like {
-    private static WebDriver driver;
-    private static StringBuffer verificationErrors = new StringBuffer();
-
-    private static int finished = 0;
+    private WebDriver driver;
+    public int finished = 0;
     private static int runs = 0;
     private static final int RUN_LIMIT = 3;
-
-    private static Calendar cal;
-    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
-    private static int counter = 0;
-
-    private static Monitor monitor;
-
-    public boolean isRunning;
+    private static boolean isRunning = true;
 
     public void like(String proxy, String url, String comment, String username, String password) throws Exception {
         setUp();
@@ -36,13 +23,6 @@ public class Like {
         }else {
             proxy = "No proxy";
         }
-
-        monitor = Main.monitor;
-
-        counter = monitor.getLikeCounter();
-
-        cal = Calendar.getInstance();
-        monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Like", "Started", sdf.format(cal.getTime())});
 
         while(finished == 0) {
             runs++;
@@ -54,24 +34,13 @@ public class Like {
             }
         }
 
-        cal = Calendar.getInstance();
-
-        if(finished == 1) {
-            counter++;
-
-            monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Like", "Finished", sdf.format(cal.getTime())});
-            monitor.updateCounter(counter, Main.urls.size(), "like");
-        }else {
-            monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxy, "Like", "Error", sdf.format(cal.getTime())});
-        }
-
         tearDown();
     }
 
     @Before
     public void setUp() throws Exception {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
     @Test
@@ -86,10 +55,13 @@ public class Like {
         isPresent = driver.findElements(By.className("signin-container ")).size();
 
         if(isPresent > 0) {
+            zoomOut(3);
+
             driver.findElement(By.className("signin-container ")).click();
             driver.findElement(By.id("Email")).clear();
             driver.findElement(By.id("Email")).sendKeys(username);
             driver.findElement(By.id("next")).click();
+            Thread.sleep(2500);
             driver.findElement(By.id("Passwd")).clear();
             driver.findElement(By.id("Passwd")).sendKeys(password);
             driver.findElement(By.id("PersistentCookie")).click();
@@ -119,8 +91,13 @@ public class Like {
         if(driver.toString() != null) {
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
 
+            Thread.sleep(2500);
+
+            zoomOut(3);
+
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
                 if(!isRunning) {
+                    System.out.println("END");
                     finished = 0;
                     runs = RUN_LIMIT;
                     break;
@@ -136,6 +113,7 @@ public class Like {
 
             while(!textExists(comment)) {
                 if(!isRunning) {
+                    System.out.println("END");
                     finished = 0;
                     runs = RUN_LIMIT;
                     break;
@@ -150,6 +128,7 @@ public class Like {
                     if(moreButtonSize() > 0) {
                         more = driver.findElement(By.xpath("//*[@id=\"comment-section-renderer\"]/button"));
                         more.click();
+                        finished = 1;
                         break;
                     }
                 }else {
@@ -167,6 +146,7 @@ public class Like {
 
                 for(WebElement element : childs) {
                     if(!isRunning) {
+                        System.out.println("END");
                         finished = 0;
                         runs = RUN_LIMIT;
                         break;
@@ -189,32 +169,38 @@ public class Like {
         }
     }
 
-    private static boolean textExists(String text){
+    private boolean textExists(String text){
         boolean b = driver.getPageSource().contains(text);
         return b;
     }
 
-    private static int moreButtonSize(){
+    private int moreButtonSize(){
         int s = driver.findElements(By.xpath("//*[@id=\"comment-section-renderer\"]/button")).size();
         return s;
     }
 
-    private static int getX(WebElement element) {
+    private int getX(WebElement element) {
         int x = element.getLocation().x - 100;
         return x;
     }
 
-    private static int getY(WebElement element) {
+    private int getY(WebElement element) {
         int y = element.getLocation().y - 100;
         return y;
+    }
+
+    private void zoomOut(int level) {
+        for(int i = 0; i < level; i++) {
+            driver.findElement(By.tagName("html")).sendKeys(Keys.chord(Keys.CONTROL, Keys.SUBTRACT));
+        }
+    }
+
+    public void kill() {
+        isRunning = false;
     }
 
     @After
     public void tearDown() throws Exception {
         driver.quit();
-        String verificationErrorString = verificationErrors.toString();
-        if (!"".equals(verificationErrorString)) {
-            fail(verificationErrorString);
-        }
     }
 }

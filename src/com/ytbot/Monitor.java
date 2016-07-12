@@ -12,8 +12,8 @@ public class Monitor {
     private static JFrame frame = new JFrame();
     private static int commentCounter;
     private static int likeCounter;
-    private static int commentTotal;
-    private static int likeTotal;
+    private static int totalCommentCounter;
+    private static int totalLikeCounter;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static int width = (int) (screenSize.getWidth() * 0.5);
     private static int height = (int) (screenSize.getHeight() * 0.75);
@@ -22,6 +22,12 @@ public class Monitor {
     public Monitor() {
         lCounterURL = new JLabel();
         lCounterAccount = new JLabel();
+
+        totalCommentCounter = 0;
+        totalLikeCounter = 0;
+
+        commentCounter = 0;
+        likeCounter = 0;
 
         model = new DefaultTableModel();
 
@@ -44,20 +50,29 @@ public class Monitor {
         scrollPane = new JScrollPane(table);
     }
 
-    public int getCommentCounter() {
+    public synchronized int getCommentCounter() {
        return commentCounter;
     }
 
-    public int getLikeCounter() {
+    public synchronized int getLikeCounter() {
         return likeCounter;
     }
 
-    public void updateCounter(int x, int y, String flag) {
+    public synchronized int getTotalCommentCounter() {
+        totalCommentCounter++;
+        return totalCommentCounter;
+    }
+
+    public synchronized int getTotalLikeCounter() {
+        totalLikeCounter++;
+        return totalLikeCounter;
+    }
+
+    public synchronized void updateCounter(int x, int y, String flag) {
         String s1 = "";
 
         if(flag.equals("comment")) {
             commentCounter = x;
-            likeTotal = commentCounter;
             s1 = "Comments: ";
         }else if(flag.equals("like")) {
             likeCounter = x;
@@ -77,9 +92,8 @@ public class Monitor {
     }
 
     public void newScreen(boolean useLike, boolean cLikeEnabled) {
-        commentTotal = Main.counterURL;
-        lCounterURL.setText("Comments: 0/" + commentTotal);
-        lCounterAccount.setText("Likes: 0/" + commentCounter);
+        lCounterURL.setText("Comments: 0/0");
+        lCounterAccount.setText("Likes: 0/0");
 
         panel.add(lCounterURL);
 
