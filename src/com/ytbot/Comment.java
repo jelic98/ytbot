@@ -31,7 +31,7 @@ public class Comment {
         while(finished == 0) {
             runs++;
 
-            if(runs < RUN_LIMIT) {
+            if(runs <= RUN_LIMIT) {
                 testComment(url, comment, username, password);
             }else {
                 break;
@@ -68,11 +68,9 @@ public class Comment {
         Thread.sleep(1000);
 
         if(driver.toString() != null) {
-            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
+            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height / 2 + ")");
 
             Thread.sleep(2500);
-
-            zoomOut(3);
 
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
                 if(!isRunning) {

@@ -27,7 +27,7 @@ public class Like {
         while(finished == 0) {
             runs++;
 
-            if(runs < RUN_LIMIT) {
+            if(runs <= RUN_LIMIT) {
                 testLike(url, comment, username, password);
             }else {
                 break;
@@ -89,31 +89,33 @@ public class Like {
         Thread.sleep(1000);
 
         if(driver.toString() != null) {
-            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height + ")");
+            jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height / 2 + ")");
 
             Thread.sleep(2500);
 
-            zoomOut(3);
-
             while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
                 if(!isRunning) {
-                    System.out.println("END");
                     finished = 0;
                     runs = RUN_LIMIT;
                     break;
                 }
 
+                Long old = (Long) jse.executeScript("return window.scrollY;");
                 pos -= 50;
                 jse.executeScript("window.scrollTo(0 , " + pos + ")");
+                Long current = (Long) jse.executeScript("return window.scrollY;");
 
-                if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                if(current > old) {
+                    if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                        break;
+                    }
+                }else {
                     break;
                 }
             }
 
             while(!textExists(comment)) {
                 if(!isRunning) {
-                    System.out.println("END");
                     finished = 0;
                     runs = RUN_LIMIT;
                     break;
