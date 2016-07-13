@@ -178,7 +178,7 @@ public class Main {
 
                                     while(q < accounts.size()) {
                                         String username = (new ArrayList<String>(accounts.keySet())).get(q);
-                                        String password = accounts.get(url);
+                                        String password = accounts.get(username);
 
                                         boolean firstRunLike = true;
                                         liked = 0;
