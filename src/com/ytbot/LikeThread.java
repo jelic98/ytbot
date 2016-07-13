@@ -9,7 +9,6 @@ public class LikeThread extends Thread {
     private static boolean isRunning = true;
     public boolean done;
     private final int pos, q;
-    private int finishedLikes;
 
     public LikeThread(int pos, int q, String proxy, String url, String comment, String username, String password) {
         this.proxy = proxy;
@@ -42,15 +41,22 @@ public class LikeThread extends Thread {
             }
 
             while(!Main.runningCommentThreads.get(pos).done) {
-                //wait for comment thread to finish
-                System.out.println(pos + " " + Main.runningCommentThreads.get(pos).done);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
-            finishedLikes = 0;
+            int finishedLikes = 0;
 
-            for(LikeThread likeThread : Main.runningLikeThreads) {
-                if(likeThread.pos == pos && likeThread.q < q && likeThread.done) {
-                    finishedLikes++;
+            while(finishedLikes < q) {
+                finishedLikes = 0;
+
+                for(LikeThread likeThread : Main.runningLikeThreads) {
+                    if(likeThread.pos == pos && likeThread.q < q && likeThread.done) {
+                        finishedLikes++;
+                    }
                 }
             }
 

@@ -43,7 +43,11 @@ public class CommentThread extends Thread {
 
             if(pos >= Main.threads) {
                 while(!Main.runningCommentThreads.get(pos - Main.threads).done) {
-                    //wait for previous thread or group of threads to finish
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
