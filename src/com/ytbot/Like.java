@@ -20,8 +20,6 @@ public class Like {
 
         if(!proxy.equals("0")) {
             driver = Proxy.setProxy(proxy);
-        }else {
-            proxy = "No proxy";
         }
 
         while(finished == 0) {
@@ -55,16 +53,14 @@ public class Like {
         isPresent = driver.findElements(By.className("signin-container ")).size();
 
         if(isPresent > 0) {
-            zoomOut(3);
-
             driver.findElement(By.className("signin-container ")).click();
+            Thread.sleep(2500);
             driver.findElement(By.id("Email")).clear();
             driver.findElement(By.id("Email")).sendKeys(username);
             driver.findElement(By.id("next")).click();
             Thread.sleep(2500);
             driver.findElement(By.id("Passwd")).clear();
             driver.findElement(By.id("Passwd")).sendKeys(password);
-            driver.findElement(By.id("PersistentCookie")).click();
             driver.findElement(By.id("signIn")).click();
         }
 
@@ -86,14 +82,20 @@ public class Like {
 
         int pos = driver.manage().window().getSize().height;
 
-        Thread.sleep(1000);
+        System.out.println("started");
 
-        if(driver.toString() != null) {
+        if(driver.toString().contains("(null)")) {
+            System.out.println("true");
+
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height / 2 + ")");
 
             Thread.sleep(2500);
 
-            while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+            int status = 0;
+
+            while(status == 0) {
+                System.out.println("running");
+
                 if(!isRunning) {
                     finished = 0;
                     runs = RUN_LIMIT;
@@ -106,10 +108,15 @@ public class Like {
                 Long current = (Long) jse.executeScript("return window.scrollY;");
 
                 if(current > old) {
+                    System.out.println("continue");
                     if(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).getSize().height > 0) {
+                        System.out.println("FOUND");
+                        status++;
                         break;
                     }
                 }else {
+                    System.out.println("exit");
+                    status++;
                     break;
                 }
             }
@@ -148,7 +155,6 @@ public class Like {
 
                 for(WebElement element : childs) {
                     if(!isRunning) {
-                        System.out.println("END");
                         finished = 0;
                         runs = RUN_LIMIT;
                         break;
@@ -168,41 +174,38 @@ public class Like {
                     }
                 }
             }
+        }else {
+            finished = 0;
+            driver.quit();
         }
     }
 
-    private boolean textExists(String text){
+    private synchronized boolean textExists(String text){
         boolean b = driver.getPageSource().contains(text);
         return b;
     }
 
-    private int moreButtonSize(){
+    private synchronized int moreButtonSize(){
         int s = driver.findElements(By.xpath("//*[@id=\"comment-section-renderer\"]/button")).size();
         return s;
     }
 
-    private int getX(WebElement element) {
+    private synchronized int getX(WebElement element) {
         int x = element.getLocation().x - 100;
         return x;
     }
 
-    private int getY(WebElement element) {
+    private synchronized int getY(WebElement element) {
         int y = element.getLocation().y - 100;
         return y;
     }
 
-    private void zoomOut(int level) {
-        for(int i = 0; i < level; i++) {
-            driver.findElement(By.tagName("html")).sendKeys(Keys.chord(Keys.CONTROL, Keys.SUBTRACT));
-        }
-    }
-
-    public void kill() {
+    public synchronized void kill() {
         isRunning = false;
     }
 
     @After
-    public void tearDown() throws Exception {
+    public synchronized void tearDown() throws Exception {
         driver.quit();
     }
 }

@@ -4,6 +4,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Comment {
     private WebDriver driver;
@@ -24,18 +26,18 @@ public class Comment {
 
         if(!proxy.equals("0")) {
             driver = Proxy.setProxy(proxy);
-        }else {
-            proxy = "No proxy";
         }
 
         while(finished == 0) {
             runs++;
 
-            if(runs <= RUN_LIMIT) {
+            finished = 1;
+
+            /*if(runs <= RUN_LIMIT) {
                 testComment(url, comment, username, password);
             }else {
                 break;
-            }
+            }*/
         }
 
         tearDown();
@@ -49,30 +51,28 @@ public class Comment {
         int isPresent = driver.findElements(By.className("signin-container ")).size();
 
         if(isPresent > 0) {
-            zoomOut(3);
-
             driver.findElement(By.className("signin-container ")).click();
+            Thread.sleep(2500);
             driver.findElement(By.id("Email")).clear();
             driver.findElement(By.id("Email")).sendKeys(username);
             driver.findElement(By.id("next")).click();
             Thread.sleep(2500);
             driver.findElement(By.id("Passwd")).clear();
             driver.findElement(By.id("Passwd")).sendKeys(password);
-            driver.findElement(By.id("PersistentCookie")).click();
             driver.findElement(By.id("signIn")).click();
         }
 
-        JavascriptExecutor jse = (JavascriptExecutor)driver;
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
         int pos = driver.manage().window().getSize().height;
 
-        Thread.sleep(1000);
-
-        if(driver.toString() != null) {
+        if(driver.toString().contains("(null)")) {
             jse.executeScript("window.scrollTo(0 , " + driver.manage().window().getSize().height / 2 + ")");
 
             Thread.sleep(2500);
 
-            while(driver.findElement(By.className("comment-simplebox-renderer-collapsed-content")).isDisplayed()) {
+            int status = 0;
+
+            while(status == 0) {
                 if(!isRunning) {
                     finished = 0;
                     runs = RUN_LIMIT;
@@ -90,27 +90,27 @@ public class Comment {
                         driver.findElement(By.className("comment-simplebox-text")).sendKeys(comment);
                         driver.findElement(By.className("comment-simplebox-submit")).click();
                         finished = 1;
+                        status++;
                         break;
                     }
                 }else {
+                    status++;
                     break;
                 }
             }
+        }else {
+            finished = 0;
+            driver.quit();
         }
     }
 
-    private void zoomOut(int level) {
-        for(int i = 0; i < level; i++) {
-            driver.findElement(By.tagName("html")).sendKeys(Keys.chord(Keys.CONTROL, Keys.SUBTRACT));
-        }
-    }
-
-    public void kill() {
+    public synchronized void kill() {
         isRunning = false;
+        driver.quit();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public synchronized void tearDown() throws Exception {
         driver.quit();
     }
 }

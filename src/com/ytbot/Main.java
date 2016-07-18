@@ -465,8 +465,8 @@ public class Main {
     }
 
     private void abortLikes() {
-        for(LikeThread thread : runningLikeThreads) {
-            thread.kill();
+        for(LikeThread likeThread : runningLikeThreads) {
+            likeThread.kill();
         }
 
         runningLikeThreads.clear();
@@ -662,11 +662,6 @@ public class Main {
 
     private void populateMap(Map<String, String> hashMap) {
         try{
-            //check if user selected any files and exit if not
-            if(getFiles() == null) {
-                return;
-            }
-
             FileInputStream fstream = new FileInputStream(String.valueOf(Paths.get(getFiles())));
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));

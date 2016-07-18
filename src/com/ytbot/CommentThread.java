@@ -42,7 +42,7 @@ public class CommentThread extends Thread {
             }
 
             if(pos >= Main.threads) {
-                while(!Main.runningCommentThreads.get(pos - Main.threads).done) {
+                while(true) {//!Main.runningCommentThreads.get(pos - Main.threads).done) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -80,7 +80,7 @@ public class CommentThread extends Thread {
         }
     }
 
-    public void kill() {
+    public synchronized void kill() {
         done = true;
         isRunning = false;
         com.kill();

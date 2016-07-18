@@ -48,14 +48,12 @@ public class LikeThread extends Thread {
                 }
             }
 
-            int finishedLikes = 0;
-
-            while(finishedLikes < q) {
-                finishedLikes = 0;
-
-                for(LikeThread likeThread : Main.runningLikeThreads) {
-                    if(likeThread.pos == pos && likeThread.q < q && likeThread.done) {
-                        finishedLikes++;
+            if(Main.counter >= Main.threads && q >= Main.threads) {
+                while(!Main.runningLikeThreads.get(pos - Main.threads).done) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -98,7 +96,7 @@ public class LikeThread extends Thread {
         }
     }
 
-    public void kill() {
+    public synchronized void kill() {
         done = true;
         isRunning = false;
         like.kill();
