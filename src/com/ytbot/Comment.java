@@ -33,11 +33,11 @@ public class Comment {
 
             finished = 1;
 
-            /*if(runs <= RUN_LIMIT) {
-                testComment(url, comment, username, password);
+            if(runs <= RUN_LIMIT) {
+                //testComment(url, comment, username, password);
             }else {
                 break;
-            }*/
+            }
         }
 
         tearDown();
@@ -73,6 +73,7 @@ public class Comment {
             int status = 0;
 
             while(status == 0) {
+                System.out.println("1");
                 if(!isRunning) {
                     finished = 0;
                     runs = RUN_LIMIT;
@@ -100,13 +101,11 @@ public class Comment {
             }
         }else {
             finished = 0;
-            driver.quit();
         }
     }
 
     public synchronized void kill() {
         isRunning = false;
-        driver.quit();
     }
 
     @After

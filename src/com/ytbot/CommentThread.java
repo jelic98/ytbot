@@ -42,7 +42,7 @@ public class CommentThread extends Thread {
             }
 
             if(pos >= Main.threads) {
-                while(true) {//!Main.runningCommentThreads.get(pos - Main.threads).done) {
+                while(!Main.runningCommentThreads.get(pos - Main.threads).done) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -74,9 +74,9 @@ public class CommentThread extends Thread {
                 monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxyText, "Comment", "Error", sdf.format(cal.getTime())});
             }
 
-            monitor.updateCounter(counter, totalCounter, "comment");
-
             kill();
+
+            monitor.updateCounter(counter, totalCounter, "comment");
         }
     }
 

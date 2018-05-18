@@ -90,9 +90,9 @@ public class LikeThread extends Thread {
                 monitor.addRow(new Object[]{url + ":" + comment, username + ":" + password, proxyText, "Like", "Error", sdf.format(cal.getTime())});
             }
 
-            monitor.updateCounter(counter, totalCounter, "like");
-
             kill();
+
+            monitor.updateCounter(counter, totalCounter, "like");
         }
     }
 

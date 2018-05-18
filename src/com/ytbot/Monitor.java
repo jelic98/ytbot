@@ -86,7 +86,7 @@ public class Monitor {
 
         if(flag.equals("comment")) {
             lCounterURL.setText(s1);
-        }else if(flag.equals("like")) {
+        }else if(flag.equals("lsike")) {
             lCounterAccount.setText(s1);
         }
     }
