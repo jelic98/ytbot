@@ -271,7 +271,7 @@ public class Main {
                 String s = "";
                 s += "YTBot v2.0\n";
                 s += "Mozilla Firefox(version<47) is required\n";
-                s += "Visit ecloga.org/ytbot for more information";
+                s += "Visit https://lazarjelic.com/ecloga/ytbot for more information";
                 //todo write instructions
                 JOptionPane.showMessageDialog(null, s, "Info", JOptionPane.INFORMATION_MESSAGE);
             }
